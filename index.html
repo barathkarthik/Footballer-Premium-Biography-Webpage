@@ -1,0 +1,1738 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Messi X Cristiano</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      background-color: #fff;
+      background-image:
+        linear-gradient(#f7f7f7 1px, transparent 1px),
+        linear-gradient(90deg, #f7f7f7 1px, transparent 1px);
+      background-size: 80px 80px;
+      font-family: 'Playfair Display', serif;
+    }
+
+    .hero {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      background-color: #fff;
+      background-image:
+        linear-gradient(#f7f7f7 1px, transparent 1px),
+        linear-gradient(90deg, #f7f7f7 1px, transparent 1px);
+      background-size: 80px 80px;
+    }
+
+    .carousel {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 70vw;
+      height: 100%;
+      z-index: 2;
+      pointer-events: auto;
+    }
+
+    .slide {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform-origin: center;
+      width: 55%;
+      max-width: 580px;
+      height: auto;
+      transition: transform 0.5s ease, opacity 0.5s ease;
+      will-change: transform, opacity;
+      perspective: 1200px;
+    }
+
+    .slide-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      will-change: transform;
+      transform-style: preserve-3d;
+      transition: transform 0.4s ease;
+    }
+
+    .flip-btn {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      z-index: 10;
+      width: 36px;
+      height: 36px;
+      border: none;
+      border-radius: 50%;
+      background: rgba(0, 0, 0, 0.5);
+      color: #fff;
+      font-size: 20px;
+      line-height: 1;
+      cursor: pointer;
+      pointer-events: auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s ease, transform 0.2s ease;
+    }
+
+    .flip-btn:hover {
+      background: rgba(0, 0, 0, 0.75);
+      transform: scale(1.08);
+    }
+
+    .slide--center {
+      transform: translate(-50%, -50%) scale(1);
+      z-index: 5;
+      opacity: 1;
+    }
+
+    .slide--right-1 {
+      transform: translate(45%, -50%) scale(0.9);
+      opacity: 0.4;
+      z-index: 4;
+    }
+
+    .slide--right-2 {
+      transform: translate(75%, -50%) scale(0.8);
+      opacity: 0.15;
+      z-index: 3;
+    }
+
+    .slide--left-1 {
+      transform: translate(-145%, -50%) scale(0.9);
+      opacity: 0.4;
+      z-index: 4;
+    }
+
+    .slide--left-2 {
+      transform: translate(-175%, -50%) scale(0.8);
+      opacity: 0.15;
+      z-index: 3;
+    }
+
+    /* Animated grid */
+    .grid-canvas {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    /* Card faces for 3D flip */
+    .card-face {
+      position: absolute;
+      inset: 0;
+      backface-visibility: hidden;
+      transform-style: preserve-3d;
+    }
+
+    .card-face--back {
+      transform: rotateY(180deg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .card-face--back img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    /* Base / reveal layers for dual-image spotlight */
+    .layer-base,
+    .layer-reveal {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+    }
+
+    .layer-base {
+      z-index: 2;
+    }
+
+    .layer-reveal {
+      z-index: 3;
+    }
+
+    .layer-reveal img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .layer-base img {
+      width: 100%;
+      height: auto;
+      display: block;
+      will-change: transform;
+    }
+
+    .reveal-canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      filter: blur(8px);
+      display: block;
+    }
+
+
+    /* Echo trails canvas */
+    .echo-canvas {
+      position: absolute;
+      inset: 0;
+      z-index: 5;
+      pointer-events: none;
+    }
+
+    /* Spotlight ring visual */
+    .spotlight-ring {
+      position: fixed;
+      width: 200px;
+      height: 200px;
+      border: 2px solid rgba(0, 0, 0, 0.25);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 10;
+      transform: translate(-50%, -50%);
+      transition: border-color 0.3s ease, opacity 0.3s ease;
+      mix-blend-mode: normal;
+      opacity: 0;
+    }
+
+    /* Custom cursor dot */
+    .cursor-dot {
+      position: fixed;
+      width: 8px;
+      height: 8px;
+      background: #000;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 11;
+      transform: translate(-50%, -50%);
+      transition: background 0.3s ease, opacity 0.3s ease;
+      opacity: 0;
+    }
+
+    /* UI overlay */
+    .ui-layer {
+      position: absolute;
+      inset: 0;
+      z-index: 7;
+      pointer-events: none;
+    }
+
+    /* Name — top left */
+    .name {
+      position: absolute;
+      top: 48px;
+      left: 48px;
+      pointer-events: auto;
+      will-change: transform;
+    }
+
+    .name .line {
+      display: block;
+      font-size: clamp(28px, 4vw, 56px);
+      font-weight: 700;
+      line-height: 1.05;
+      letter-spacing: 0.02em;
+      color: #111;
+      transition: color 0.3s ease;
+    }
+
+    /* Inverted state when spotlight overlaps */
+    .inverted .line {
+      color: #fff !important;
+    }
+
+    .pagination {
+      position: absolute;
+      bottom: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 12px;
+      z-index: 20;
+    }
+
+    .pagination-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: rgba(0, 0, 0, 0.3);
+      transition: all 0.3s ease;
+    }
+
+    .pagination-dot.active {
+      background: black;
+      transform: scale(1.4);
+    }
+
+    /* Duo comparison section (Messi X Cristiano only) */
+    #duo-comparison.duo-comparison {
+      height: 100vh;
+      width: 100%;
+      position: relative;
+      overflow: hidden;
+      background: inherit;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    #duo-comparison.duo-comparison.hidden {
+      display: none;
+    }
+    .duo-stage {
+      position: relative;
+      width: 100%;
+      height: 100%;
+    }
+    .duo-messi,
+    .duo-ronaldo {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      overflow: hidden;
+      display: flex;
+      align-items: flex-end;
+    }
+
+    .duo-messi {
+      left: 0;
+      z-index: 2;
+      justify-content: center;
+    }
+
+    .duo-ronaldo {
+      right: 0;
+      z-index: 1;
+      justify-content: center;
+    }
+    .duo-messi img,
+    .duo-ronaldo img {
+      height: 100%;
+      width: auto;
+      object-fit: contain;
+      filter: drop-shadow(0 4px 20px rgba(0, 0, 0, 0.25));
+    }
+    .duo-divider {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: rgba(0, 0, 0, 0.3);
+      cursor: ew-resize;
+      z-index: 3;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .duo-divider-handle {
+      position: absolute;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #fff;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
+      pointer-events: none;
+    }
+    .duo-text {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 4;
+      pointer-events: none;
+    }
+    .duo-text .messi-text,
+    .duo-text .ronaldo-text {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 32%;
+      max-width: 420px;
+      transition: opacity 0.3s ease;
+    }
+    .duo-text .messi-text {
+      left: 8%;
+      text-align: left;
+    }
+    .duo-text .ronaldo-text {
+      right: 8%;
+      text-align: right;
+    }
+    .editorial-block {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .editorial-number {
+      font-size: 14px;
+      letter-spacing: 0.2em;
+      color: rgba(0,0,0,0.4);
+    }
+    .editorial-name {
+      font-size: clamp(28px, 3vw, 40px);
+      font-weight: 700;
+      line-height: 1.1;
+      color: #111;
+    }
+    .editorial-meta {
+      font-size: 14px;
+      letter-spacing: 0.08em;
+      color: rgba(0,0,0,0.5);
+    }
+    .editorial-body {
+      font-size: clamp(14px, 1.1vw, 16px);
+      line-height: 1.6;
+      color: rgba(0,0,0,0.75);
+      max-width: 420px;
+    }
+
+    /* Duo carousels – Netflix-style centered, 4 cards visible, no scroll past end */
+    #duo-carousels {
+      width: 100%;
+      padding: 0 0 140px 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    #duo-carousels.duo-carousels.hidden {
+      display: none;
+    }
+    #timelineYearTitle {
+      align-self: stretch;
+      text-align: left;
+      font-size: clamp(32px, 4.5vw, 48px);
+      font-weight: 700;
+      color: #111;
+      margin: 0 0 32px 0;
+      padding-left: max(48px, calc((100vw - min(1200px, 90vw)) / 2));
+    }
+    .duo-carousel-row {
+      position: relative;
+      width: min(1200px, 90vw);
+      margin-bottom: 140px;
+    }
+    .duo-carousel-next {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 48px;
+      height: 48px;
+      border: none;
+      border-radius: 50%;
+      background: rgba(0, 0, 0, 0.6);
+      color: #fff;
+      font-size: 24px;
+      line-height: 1;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s ease, transform 0.2s ease;
+      z-index: 10;
+    }
+    .duo-carousel-next:hover {
+      background: rgba(0, 0, 0, 0.85);
+      transform: translateY(-50%) scale(1.08);
+    }
+    .duo-carousel-next:active {
+      transform: translateY(-50%) scale(0.98);
+    }
+    .duo-carousel-track-wrap {
+      width: 100%;
+      overflow-x: auto;
+      overflow-y: hidden;
+      padding: 0;
+      scroll-snap-type: x mandatory;
+      scroll-behavior: smooth;
+      -webkit-overflow-scrolling: touch;
+    }
+    .duo-carousel-track-wrap::-webkit-scrollbar {
+      height: 8px;
+    }
+    .duo-carousel-track-wrap::-webkit-scrollbar-track {
+      background: #f0f0f0;
+      border-radius: 4px;
+    }
+    .duo-carousel-track-wrap::-webkit-scrollbar-thumb {
+      background: #bbb;
+      border-radius: 4px;
+    }
+    .duo-carousel-track {
+      display: flex;
+      gap: 24px;
+      width: max-content;
+    }
+    .duo-carousel-item {
+      flex: 0 0 260px;
+      scroll-snap-align: start;
+      transition: transform 0.35s ease;
+    }
+    .duo-carousel-track:hover .duo-card {
+      opacity: 0.55;
+    }
+    .duo-carousel-item:hover .duo-card {
+      transform: scale(1.08);
+      z-index: 5;
+      box-shadow: 0 20px 45px rgba(0,0,0,0.25);
+      opacity: 1;
+    }
+    .duo-card {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 3 / 4;
+      border-radius: 12px;
+      overflow: hidden;
+      background: #f6f6f6;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+      transition: transform 0.35s ease, opacity 0.35s ease, box-shadow 0.35s ease;
+    }
+    .duo-card img {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: cover;
+    }
+
+    .messi-biography {
+      width: 100%;
+      padding: 140px 0;
+      position: relative;
+    }
+    .ronaldo-biography {
+      padding-top: 0;
+    }
+    .messi-biography-container {
+      width: min(1200px, 90vw);
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+    }
+    .messi-bio-text {
+      font-family: 'Playfair Display', serif;
+      color: #111;
+      line-height: 1.7;
+    }
+    .bio-title {
+      font-size: clamp(32px, 3vw, 40px);
+      margin-bottom: 24px;
+      font-weight: 700;
+    }
+    .messi-bio-text p {
+      font-size: clamp(15px, 1.1vw, 18px);
+      color: rgba(0, 0, 0, 0.75);
+      margin-bottom: 18px;
+    }
+    .messi-bio-image {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .messi-bio-image img {
+      width: 100%;
+      max-width: 420px;
+      height: auto;
+      object-fit: contain;
+      filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.25));
+    }
+    .messi-bio-wrapper {
+      position: relative;
+    }
+    .messi-bio-page {
+      display: none;
+    }
+    .messi-bio-page.active {
+      display: block;
+    }
+    .bio-prev-btn,
+    .bio-next-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      border: none;
+      background: #111;
+      color: white;
+      font-size: 22px;
+      cursor: pointer;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+      transition: transform 0.2s ease, background 0.2s ease;
+    }
+    .bio-prev-btn {
+      left: 60px;
+    }
+    .bio-next-btn {
+      right: 60px;
+    }
+    .bio-prev-btn:hover,
+    .bio-next-btn:hover {
+      transform: translateY(-50%) scale(1.1);
+      background: #000;
+    }
+    .ronaldo-bio-wrapper {
+      position: relative;
+    }
+    .ronaldo-bio-page {
+      display: none;
+    }
+    .ronaldo-bio-page.active {
+      display: block;
+    }
+    @media (max-width: 900px) {
+      .messi-biography-container {
+        grid-template-columns: 1fr;
+        gap: 40px;
+      }
+      .messi-bio-image {
+        order: -1;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="hero" id="hero">
+
+    <!-- Animated background grid -->
+    <canvas class="grid-canvas" id="gridCanvas"></canvas>
+
+    <div class="carousel" id="carousel">
+      <div class="slide">
+        <div class="layer-base">
+          <img src="assets/hamilton-face.png" alt="Base portrait" class="imgBase">
+        </div>
+        <div class="layer-reveal">
+          <img src="assets/hamilton-helmet.png" alt="Reveal portrait" class="imgReveal">
+        </div>
+      </div>
+
+      <div class="slide">
+        <div class="layer-base">
+          <img src="assets/hamilton-face.png" alt="Base portrait" class="imgBase">
+        </div>
+        <div class="layer-reveal">
+          <img src="assets/hamilton-helmet.png" alt="Reveal portrait" class="imgReveal">
+        </div>
+      </div>
+
+      <div class="slide">
+        <div class="layer-base">
+          <img src="assets/hamilton-face.png" alt="Base portrait" class="imgBase">
+        </div>
+        <div class="layer-reveal">
+          <img src="assets/hamilton-helmet.png" alt="Reveal portrait" class="imgReveal">
+        </div>
+      </div>
+
+      <div class="slide">
+        <div class="layer-base">
+          <img src="assets/hamilton-face.png" alt="Base portrait" class="imgBase">
+        </div>
+        <div class="layer-reveal">
+          <img src="assets/hamilton-helmet.png" alt="Reveal portrait" class="imgReveal">
+        </div>
+      </div>
+
+      <div class="slide">
+        <div class="layer-base">
+          <img src="assets/hamilton-face.png" alt="Base portrait" class="imgBase">
+        </div>
+        <div class="layer-reveal">
+          <img src="assets/hamilton-helmet.png" alt="Reveal portrait" class="imgReveal">
+        </div>
+      </div>
+    </div>
+
+    <div class="pagination" id="pagination"></div>
+
+    <!-- Echo trails -->
+    <canvas class="echo-canvas" id="echoCanvas"></canvas>
+
+    <!-- UI elements -->
+    <div class="ui-layer" id="uiLayer">
+      <div class="name" id="nameBlock">
+        <span class="line">Messi</span>
+        <span class="line">X</span>
+        <span class="line">Cristiano</span>
+      </div>
+    </div>
+  </div>
+
+  <section id="duo-comparison" class="duo-comparison hidden">
+    <div class="duo-stage">
+      <div class="duo-ronaldo">
+        <img src="assets/Cristiano.png" alt="Cristiano Ronaldo" />
+      </div>
+      <div class="duo-messi" id="duoMessiContainer">
+        <img src="assets/Messi.png" alt="Lionel Messi" />
+      </div>
+      <div class="duo-divider" id="duoDivider">
+        <span class="duo-divider-handle"></span>
+      </div>
+    </div>
+    <div class="duo-text">
+      <div class="messi-text" id="duoMessiText">
+        <div class="editorial-block">
+          <span class="editorial-number">01</span>
+          <h2 class="editorial-name">Lionel Messi</h2>
+          <span class="editorial-meta">Peak Years: 2009–2015</span>
+          <p class="editorial-body">Lionel Messi's rivalry with Cristiano Ronaldo peaked between 2009 and 2015 during their time at Barcelona and Real Madrid. In this period, Messi won four consecutive Ballon d'Or awards (2009–2012) and consistently led La Liga in goals and assists. His playing style is defined by close control, spatial awareness, and playmaking ability, often operating between lines to create scoring opportunities. His impact extended beyond goals, shaping Barcelona's positional dominance during their most successful era.</p>
+        </div>
+      </div>
+      <div class="ronaldo-text" id="duoRonaldoText">
+        <div class="editorial-block">
+          <span class="editorial-number">02</span>
+          <h2 class="editorial-name">Cristiano Ronaldo</h2>
+          <span class="editorial-meta">Peak Years: 2011–2018</span>
+          <p class="editorial-body">Cristiano Ronaldo's peak rivalry years spanned roughly 2011 to 2018, particularly during his second tenure at Real Madrid. He won four Ballon d'Or awards in that period and became the all-time leading scorer in UEFA Champions League history. Ronaldo's profile is defined by athleticism, aerial ability, and goal efficiency. Unlike Messi's playmaking-heavy influence, Ronaldo's role evolved into that of a decisive finisher in high-pressure matches.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="messi-biography">
+    <div class="messi-bio-wrapper">
+      <div class="messi-bio-page active" id="messiPage1">
+        <div class="messi-biography-container">
+          <div class="messi-bio-text">
+            <h2 class="bio-title">Early Life — Lionel Messi</h2>
+            <p>
+            Lionel Messi was born on June 24, 1987, in the city of Rosario, Argentina, a place where football is deeply woven into everyday life. From a very young age, Messi showed a natural connection with the ball. Playing in the streets and local pitches of Rosario, he quickly stood out among other children for his balance, close control, and ability to dribble past players much older than himself.
+            </p>
+            <p>
+            At the age of six, Messi joined the youth team of Newell's Old Boys, one of Rosario's most historic clubs. There, he became the centerpiece of a youth team famously nicknamed "The Machine of '87", which dominated local youth competitions.
+            </p>
+            <p>
+            However, when Messi was eleven years old, he was diagnosed with growth hormone deficiency. The treatment was expensive and threatened to end his football dream. In 2000, FC Barcelona offered to cover the medical treatment and invited him to join their youth academy, La Masia.
+            </p>
+            <p>
+            Moving to Spain at just thirteen years old, Messi began his journey through Barcelona's academy ranks, eventually making his first-team debut in 2004 at the age of seventeen.
+            </p>
+          </div>
+          <div class="messi-bio-image">
+            <img src="assets/messi-young.png" alt="Young Lionel Messi">
+          </div>
+        </div>
+      </div>
+      <div class="messi-bio-page" id="messiPage2">
+        <div class="messi-biography-container">
+          <div class="messi-bio-text">
+            <h2 class="bio-title">The Barcelona Era</h2>
+            <p>
+            At Barcelona, Lionel Messi developed into the central figure of one of the greatest club teams in football history. Under Pep Guardiola, Barcelona perfected a style of play built around possession, constant movement, and technical precision. Messi thrived within this system, combining extraordinary dribbling, vision, and finishing to become the team's most influential player and creative force.
+            </p>
+            <p>
+            Between 2009 and 2012, Messi reached a level of consistency rarely seen in professional sport. During this remarkable period he won four consecutive Ballon d'Or awards, dominating European football while scoring goals at an unprecedented rate and consistently creating chances for his teammates.
+            </p>
+            <p>
+            In 2012 he set a world record by scoring 91 goals in a single calendar year, a historic achievement that highlighted his unmatched dominance during Barcelona's golden era.
+            </p>
+            <p>
+            By the time he left the club in 2021, Messi had become Barcelona's all-time top scorer, a symbol of the club's identity, and the defining player of a generation of football.
+            </p>
+          </div>
+          <div class="messi-bio-image">
+            <img src="assets/messi-barcelona-era.png" alt="Lionel Messi Barcelona Era">
+          </div>
+        </div>
+      </div>
+      <div class="messi-bio-page" id="messiPage3">
+        <div class="messi-biography-container">
+          <div class="messi-bio-text">
+            <h2 class="bio-title">Legacy and World Cup Triumph</h2>
+            <p>
+            For much of his career, Lionel Messi's greatness was unquestioned at club level, yet international success with Argentina remained the one missing chapter in his story. After several painful defeats in major finals, including the 2014 FIFA World Cup and consecutive Copa América tournaments, many wondered whether Messi would ever lift a major trophy with his national team.
+            </p>
+            <p>
+            In 2021, that narrative finally changed. Messi led Argentina to victory in the Copa América, defeating Brazil in the final at the Maracanã. The triumph marked his first major international trophy and lifted a weight that had followed him for years.
+            </p>
+            <p>
+            The defining moment of his legacy arrived at the 2022 FIFA World Cup in Qatar. Messi delivered one of the greatest tournament performances in football history, guiding Argentina to the title while combining leadership, creativity, and decisive goals.
+            </p>
+            <p>
+            By lifting the World Cup trophy, Messi completed football's greatest individual journey and secured his place among the most iconic athletes in sporting history.
+            </p>
+          </div>
+          <div class="messi-bio-image">
+            <img src="assets/messi-worldcup.png" alt="Lionel Messi World Cup 2022">
+          </div>
+        </div>
+      </div>
+      <button type="button" class="bio-prev-btn" id="bioPrevBtn" aria-label="Previous page">←</button>
+      <button type="button" class="bio-next-btn" id="bioNextBtn" aria-label="Next page">→</button>
+    </div>
+  </section>
+
+  <section class="ronaldo-biography messi-biography">
+    <div class="ronaldo-bio-wrapper">
+      <div class="ronaldo-bio-page active" id="ronaldoPage1">
+        <div class="messi-biography-container">
+          <div class="messi-bio-image">
+            <img src="assets/ronaldo-young.png" alt="Young Cristiano Ronaldo Sporting Lisbon">
+          </div>
+          <div class="messi-bio-text">
+            <h2 class="bio-title">Early Life — Cristiano Ronaldo</h2>
+            <p>
+            Cristiano Ronaldo was born on February 5, 1985, in Funchal on the Portuguese island of Madeira. Growing up in a modest household, football quickly became his greatest passion. From a young age, Ronaldo displayed extraordinary speed, determination, and an intense desire to improve, often spending hours practicing with the ball.
+            </p>
+            <p>
+            At the age of eight, he joined the youth team of Andorinha, a local club where his father worked as a kit man. His talent soon caught the attention of larger clubs, and by the age of twelve Ronaldo moved to mainland Portugal to join Sporting CP's academy in Lisbon.
+            </p>
+            <p>
+            The move meant leaving his family behind at a young age, a challenge that strengthened his discipline and ambition. At Sporting's academy he refined his technical ability, developing the explosive pace and dribbling that would later define his early career.
+            </p>
+            <p>
+            In 2003, after an impressive performance against Manchester United in a friendly match, the English club signed Ronaldo at just eighteen years old, marking the beginning of his journey to global stardom.
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="ronaldo-bio-page" id="ronaldoPage2">
+        <div class="messi-biography-container">
+          <div class="messi-bio-image">
+            <img src="assets/ronaldo-real-madrid.png" alt="Cristiano Ronaldo lifting UEFA Champions League trophy">
+          </div>
+          <div class="messi-bio-text">
+            <h2 class="bio-title">The Rise of a Superstar</h2>
+            <p>
+            Cristiano Ronaldo's breakthrough came during his time at Manchester United under manager Sir Alex Ferguson. Initially known for his flair and dribbling ability, Ronaldo rapidly developed into a complete attacking player, combining technical skill with extraordinary athleticism and discipline.
+            </p>
+            <p>
+            During the 2007–2008 season, Ronaldo reached a new level of performance, scoring 42 goals and leading Manchester United to both the Premier League title and the UEFA Champions League trophy. His performances earned him the 2008 Ballon d'Or, marking his arrival among the world's elite footballers.
+            </p>
+            <p>
+            In 2009, Ronaldo made a historic move to Real Madrid for a then world-record transfer fee. At Madrid he evolved into one of the most prolific goal scorers in football history, consistently delivering decisive performances in the UEFA Champions League.
+            </p>
+            <p>
+            His combination of speed, aerial ability, and relentless work ethic transformed him into the defining figure of Real Madrid's most successful modern era.
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="ronaldo-bio-page" id="ronaldoPage3">
+        <div class="messi-biography-container">
+          <div class="messi-bio-image">
+            <img src="assets/ronaldo-portugal-trophy.png" alt="Cristiano Ronaldo Portugal celebration">
+          </div>
+          <div class="messi-bio-text">
+            <h2 class="bio-title">Legacy of a Champion</h2>
+            <p>
+            Throughout his career, Cristiano Ronaldo built a reputation as one of the most driven and disciplined athletes in modern sport. His combination of physical power, technical precision, and relentless dedication allowed him to succeed across multiple leagues, including England, Spain, and Italy.
+            </p>
+            <p>
+            With Real Madrid, Ronaldo helped lead the club to an extraordinary era of European dominance, winning four UEFA Champions League titles between 2014 and 2018. During this period he became the competition's all-time leading scorer, delivering decisive performances in the biggest matches.
+            </p>
+            <p>
+            At international level, Ronaldo achieved his greatest success in 2016 when he captained Portugal to victory in the UEFA European Championship. The triumph marked a historic moment for Portuguese football and cemented Ronaldo's status as the nation's greatest player.
+            </p>
+            <p>
+            Beyond trophies and records, Ronaldo's legacy is defined by his mentality and longevity. His relentless pursuit of excellence has inspired millions of athletes and redefined what dedication in professional sport can achieve.
+            </p>
+          </div>
+        </div>
+      </div>
+      <button type="button" class="bio-prev-btn ronaldo-nav" id="ronaldoPrevBtn" aria-label="Previous page" style="display:none">←</button>
+      <button type="button" class="bio-next-btn ronaldo-nav" id="ronaldoNextBtn" aria-label="Next page">→</button>
+    </div>
+  </section>
+
+  <section id="duo-carousels" class="duo-carousels hidden">
+    <h2 id="timelineYearTitle">2009 — The Beginning of a Dynasty</h2>
+    <div class="duo-carousel-row">
+      <div class="duo-carousel-track-wrap">
+        <div class="duo-carousel-track" id="messiCarouselTrack"></div>
+      </div>
+      <button type="button" class="duo-carousel-next" aria-label="Next image">→</button>
+    </div>
+    <div class="duo-carousel-row">
+      <div class="duo-carousel-track-wrap">
+        <div class="duo-carousel-track" id="ronaldoCarouselTrack"></div>
+      </div>
+      <button type="button" class="duo-carousel-next" aria-label="Next image">→</button>
+    </div>
+  </section>
+
+  <!-- Spotlight ring + cursor dot -->
+  <div class="spotlight-ring" id="spotlightRing"></div>
+  <div class="cursor-dot" id="cursorDot"></div>
+
+  <script>
+    const hero = document.getElementById('hero');
+    const carousel = document.getElementById('carousel');
+    const gridCanvas = document.getElementById('gridCanvas');
+    const echoCanvas = document.getElementById('echoCanvas');
+    const spotlightRing = document.getElementById('spotlightRing');
+    const cursorDot = document.getElementById('cursorDot');
+    const nameBlock = document.getElementById('nameBlock');
+    const nameLines = nameBlock.querySelectorAll('.line');
+    const duoComparisonSection = document.getElementById('duo-comparison');
+    const duoCarouselsSection = document.getElementById('duo-carousels');
+    const duoMessiContainer = document.getElementById('duoMessiContainer');
+    const duoDivider = document.getElementById('duoDivider');
+    const duoMessiText = document.getElementById('duoMessiText');
+    const duoRonaldoText = document.getElementById('duoRonaldoText');
+
+    const DUO_CAROUSEL_EXT = '.jpg';
+    const DUO_FALLBACK_IMG = 'assets/Messi.jpg';
+    const DUO_FALLBACK_IMG_RONALDO = 'assets/Cristiano.jpg';
+    const DUO_CAROUSEL_MESSI_IMAGES = [
+      'Messi 2009 pic1.JPEG', 'Messi 2009 pic2.JPEG', 'Messi 2009 pic3.JPEG', 'Messi 2009 pic4.JPEG',
+      'Messi 2011 pic1.WEBP', 'Messi 2011 pic2.WEBP', 'Messi 2011 pic3.jpeg', 'Messi 2011 pic4.WEBP',
+      'Messi 2012 pic1.jpeg', 'Messi 2012 pic2.PNG', 'Messi 2012 pic3.AVIF', 'Messi 2012 pic4.jpeg',
+      'Messi 2014 pic1.jpeg', 'Messi 2014 pic2.WEBP', 'Messi 2014 pic3.WEBP', 'Messi 2014 pic4.jpeg',
+      'Messi 2016 pic1.WEBP', 'Messi 2016 pic2.PNG', 'Messi 2016 pic3.AVIF', 'Messi 2016 pic4.AVIF',
+      'Messi 2017 pic1.jpeg', 'Messi 2017 pic2.jpeg', 'Messi 2017 pic3.jpeg', 'Messi 2017 pic4.jpeg'
+    ];
+    const DUO_CAROUSEL_RONALDO_IMAGES = [
+      'Ronaldo 2009 pic1.JPEG', 'Ronaldo 2009 pic2.JPEG', 'Ronaldo 2009 pic3.JPEG', 'Ronaldo 2009 pic4.JPEG',
+      'Ronaldo 2011 pic1.jpeg', 'Ronaldo 2011 pic2.WEBP', 'Ronaldo 2011 pic3.jpeg', 'Ronaldo 2011 pic4.jpeg',
+      'Ronaldo 2012 pic1.jpeg', 'Ronaldo 2012 pic2.jpeg', 'Ronaldo 2012 pic3.WEBP', 'Ronaldo 2012 pic4.jpeg',
+      'Ronaldo 2014 pic1.jpeg', 'Ronaldo 2014 pic2.jpeg', 'Ronaldo 2014 pic3.PNG', 'Ronaldo 2014 pic4.PNG',
+      'Ronaldo 2016 pic1.jpeg', 'Ronaldo 2016 pic2.jpeg', 'Ronaldo 2016 pic3.jpeg', 'Ronaldo 2016 pic4.WEBP',
+      'Ronaldo 2017 pic1.jpeg', 'Ronaldo 2017 pic2.jpeg', 'Ronaldo 2017 pic3.WEBP', 'Ronaldo 2017 pic4.PNG'
+    ];
+
+    const TIMELINE_MESSI_TITLES = [
+      { start: 0, title: "2009 — The Beginning of a Dynasty" },
+      { start: 4, title: "2011 — Barcelona's Tactical Mastery" },
+      { start: 8, title: "2012 — The 91 Goal Record" },
+      { start: 12, title: "2014 — The Creative Playmaker" },
+      { start: 16, title: "2016 — The Barcelona Architect" },
+      { start: 20, title: "2017 — The Clásico Icon" }
+    ];
+
+    const TIMELINE_RONALDO_TITLES = [
+      { start: 0, title: "2009 — The Madrid Galáctico Era Begins" },
+      { start: 4, title: "2011 — The Relentless Goal Machine" },
+      { start: 8, title: "2012 — The Perfect Rival" },
+      { start: 12, title: "2014 — Champions League Conqueror" },
+      { start: 16, title: "2016 — European Champion" },
+      { start: 20, title: "2017 — The Ultimate Big-Game Scorer" }
+    ];
+
+    let currentTimelineYearIndex = -1;
+
+    const duos = [
+      { title: "Messi X Cristiano", base: "Messi.jpg", reveal: "Cristiano.jpg" },
+      { title: "Courtois X Neuer", base: "Courtois.jpg", reveal: "Neuer.jpg" },
+      { title: "Van Dijk X Ramos", base: "Van Dijk.jpg", reveal: "Ramos.jpg" },
+      { title: "Neymar X Hazard", base: "Neymar.jpg", reveal: "Hazard.jpg" },
+      { title: "Mbappe X Haland", base: "Mbappe.jpg", reveal: "Haland.jpg" }
+    ];
+
+    // Remove any static placeholder slides (if present) and generate slides dynamically.
+    carousel.innerHTML = '';
+    duos.forEach((duo) => {
+      const slide = document.createElement('div');
+      slide.className = 'slide';
+
+      const baseLayer = document.createElement('div');
+      baseLayer.className = 'layer-base';
+      const baseImg = document.createElement('img');
+      baseImg.alt = `${duo.title} (base)`;
+      baseImg.src = `assets/${encodeURI(duo.base)}`;
+      baseLayer.appendChild(baseImg);
+
+      const revealLayer = document.createElement('div');
+      revealLayer.className = 'layer-reveal';
+
+      const revealImg = document.createElement('img');
+      revealImg.src = `assets/${encodeURI(duo.reveal)}`;
+      revealImg.alt = `${duo.title} (reveal)`;
+
+      const revealCanvas = document.createElement('canvas');
+      revealCanvas.className = 'reveal-canvas';
+
+      revealLayer.appendChild(revealImg);
+      revealLayer.appendChild(revealCanvas);
+
+      const flipBtn = document.createElement('button');
+      flipBtn.type = 'button';
+      flipBtn.className = 'flip-btn';
+      flipBtn.setAttribute('aria-label', 'Flip image');
+      flipBtn.innerHTML = '↻';
+
+      const frontFace = document.createElement('div');
+      frontFace.className = 'card-face card-face--front';
+      frontFace.appendChild(baseLayer);
+      frontFace.appendChild(revealLayer);
+      frontFace.appendChild(flipBtn);
+
+      const backFace = document.createElement('div');
+      backFace.className = 'card-face card-face--back';
+      const backImg = document.createElement('img');
+      backImg.src = `assets/${encodeURI(duo.reveal)}`;
+      backImg.alt = `${duo.title} (back)`;
+      backFace.appendChild(backImg);
+
+      const slideInner = document.createElement('div');
+      slideInner.className = 'slide-inner';
+      slideInner.appendChild(frontFace);
+      slideInner.appendChild(backFace);
+      slide.appendChild(slideInner);
+      carousel.appendChild(slide);
+    });
+
+    const slides = Array.from(carousel.querySelectorAll('.slide'));
+    const slideBaseImgs = slides.map((s) => s.querySelector('.layer-base img'));
+    const slideRevealImgs = slides.map((s) =>
+      s.querySelector('.layer-reveal img')
+    );
+    const slideRevealLayers = slides.map((s) => s.querySelector('.layer-reveal'));
+    const revealCanvases = slides.map((s) => s.querySelector('.reveal-canvas'));
+    const revealImages = duos.map((duo) => {
+      const img = new Image();
+      img.src = `assets/${encodeURI(duo.reveal)}`;
+      return img;
+    });
+
+    const paginationEl = document.getElementById('pagination');
+    paginationEl.innerHTML = '';
+    for (let i = 0; i < duos.length; i++) {
+      const dot = document.createElement('span');
+      dot.className = 'pagination-dot';
+      dot.setAttribute('aria-label', `Slide ${i + 1}`);
+      paginationEl.appendChild(dot);
+    }
+    const paginationDots = paginationEl.querySelectorAll('.pagination-dot');
+
+    const gridCtx = gridCanvas.getContext('2d');
+    const echoCtx = echoCanvas.getContext('2d');
+
+    const SPOTLIGHT_RADIUS = 100;
+    const PARALLAX_STRENGTH = 8;
+
+    let currentIndex = 0;
+
+    let isDragging = false;
+    let startX = 0;
+    let currentX = 0;
+    let wasDrag = false;
+    const SWIPE_THRESHOLD = 80;
+    const CLICK_THRESHOLD = 10;
+
+    function goToNext() {
+      const count = slides.length;
+      currentIndex = (currentIndex + 1) % count;
+      updateSlides();
+    }
+
+    function goToPrev() {
+      const count = slides.length;
+      currentIndex = (currentIndex - 1 + count) % count;
+      updateSlides();
+    }
+
+    function onDragStart(x) {
+      isDragging = true;
+      wasDrag = false;
+      startX = x;
+      currentX = x;
+    }
+
+    function onDragMove(x) {
+      if (!isDragging) return;
+      currentX = x;
+    }
+
+    function onDragEnd() {
+      if (!isDragging) return;
+      const distance = currentX - startX;
+
+      if (distance < -SWIPE_THRESHOLD) {
+        wasDrag = true;
+        goToNext();
+      } else if (distance > SWIPE_THRESHOLD) {
+        wasDrag = true;
+        goToPrev();
+      }
+
+      isDragging = false;
+      startX = 0;
+      currentX = 0;
+    }
+
+    carousel.addEventListener('mousedown', (e) => onDragStart(e.clientX));
+    carousel.addEventListener('mousemove', (e) => onDragMove(e.clientX));
+    carousel.addEventListener('mouseup', onDragEnd);
+    carousel.addEventListener('mouseleave', onDragEnd);
+
+    carousel.addEventListener(
+      'touchstart',
+      (e) => {
+        if (!e.touches || !e.touches[0]) return;
+        onDragStart(e.touches[0].clientX);
+      },
+      { passive: true }
+    );
+
+    carousel.addEventListener(
+      'touchmove',
+      (e) => {
+        if (!e.touches || !e.touches[0]) return;
+        onDragMove(e.touches[0].clientX);
+      },
+      { passive: true }
+    );
+
+    carousel.addEventListener('touchend', onDragEnd);
+
+    let wheelAccum = 0;
+    let wheelResetTimer = 0;
+    const WHEEL_THRESHOLD = 80;
+    const WHEEL_COOLDOWN_MS = 400;
+    let lastWheelSlideTime = 0;
+    carousel.addEventListener(
+      'wheel',
+      (e) => {
+        const dx = e.deltaX;
+        const dy = e.deltaY;
+        const isHorizontal = Math.abs(dx) >= Math.abs(dy);
+        if (!isHorizontal) return;
+        const delta = dx !== 0 ? dx : -dy;
+        if (delta === 0) return;
+        e.preventDefault();
+        const now = Date.now();
+        if (now - lastWheelSlideTime < WHEEL_COOLDOWN_MS) return;
+        if (wheelResetTimer) clearTimeout(wheelResetTimer);
+        wheelAccum += delta;
+        wheelResetTimer = setTimeout(function () {
+          wheelAccum = 0;
+          wheelResetTimer = 0;
+        }, 150);
+        if (wheelAccum >= WHEEL_THRESHOLD) {
+          wheelAccum = 0;
+          if (wheelResetTimer) clearTimeout(wheelResetTimer);
+          wheelResetTimer = 0;
+          lastWheelSlideTime = now;
+          goToNext();
+        } else if (wheelAccum <= -WHEEL_THRESHOLD) {
+          wheelAccum = 0;
+          if (wheelResetTimer) clearTimeout(wheelResetTimer);
+          wheelResetTimer = 0;
+          lastWheelSlideTime = now;
+          goToPrev();
+        }
+      },
+      { passive: false }
+    );
+
+    carousel.addEventListener('click', (e) => {
+      if (wasDrag) {
+        wasDrag = false;
+        return;
+      }
+      if (e.target.closest('.flip-btn')) return;
+      const centerSlide = document.querySelector('.slide--center');
+      if (!centerSlide || !centerSlide.contains(e.target)) return;
+      doFlip(centerSlide);
+    });
+
+    slides.forEach((slide) => {
+      const btn = slide.querySelector('.flip-btn');
+      if (btn) btn.addEventListener('click', (e) => { e.stopPropagation(); doFlip(slide); });
+    });
+
+    let echoTimer = 0;
+    let spotlightActive = false;
+
+    function updateSlides() {
+      const count = slides.length;
+      const half = count / 2;
+      for (let i = 0; i < count; i++) {
+        const slide = slides[i];
+        slide.classList.remove(
+          'slide--center',
+          'slide--right-1',
+          'slide--right-2',
+          'slide--left-1',
+          'slide--left-2'
+        );
+
+        let offset = i - currentIndex;
+        if (offset > half) offset -= count;
+        if (offset <= -half) offset += count;
+
+        if (offset < -2 || offset > 2) {
+          slide.style.display = 'none';
+          continue;
+        }
+
+        slide.style.display = '';
+
+        if (offset === 0) slide.classList.add('slide--center');
+        if (offset === 1) slide.classList.add('slide--right-1');
+        if (offset === 2) slide.classList.add('slide--right-2');
+        if (offset === -1) slide.classList.add('slide--left-1');
+        if (offset === -2) slide.classList.add('slide--left-2');
+      }
+
+      slides.forEach((slide) => {
+        const revealImg = slide.querySelector('.layer-reveal img');
+        if (revealImg) revealImg.style.clipPath = 'circle(0px at 0 0)';
+      });
+
+      // Reset reveal canvases when slide changes
+      revealCanvases.forEach((canvas) => {
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        canvas._initialized = false;
+      });
+
+      // Dynamic name block based on current duo
+      const duo = duos[currentIndex];
+      if (duo && nameLines.length >= 3) {
+        const parts = duo.title.split(' X ');
+        nameLines[0].textContent = parts[0] || '';
+        nameLines[1].textContent = 'X';
+        nameLines[2].textContent = parts[1] || '';
+      }
+
+      // Reset spotlight when slide changes
+      spotlightActive = false;
+      document.body.style.cursor = '';
+      spotlightRing.style.opacity = '0';
+      cursorDot.style.opacity = '0';
+
+      // Update pagination active state
+      paginationDots.forEach((dot, i) => {
+        dot.classList.toggle('active', i === currentIndex);
+      });
+
+      // Show duo-comparison and duo-carousels only when current slide is Messi X Cristiano (index 0)
+      if (duoComparisonSection) {
+        if (currentIndex === 0) {
+          duoComparisonSection.classList.remove('hidden');
+        } else {
+          duoComparisonSection.classList.add('hidden');
+        }
+      }
+      if (duoCarouselsSection) {
+        if (currentIndex === 0) {
+          duoCarouselsSection.classList.remove('hidden');
+        } else {
+          duoCarouselsSection.classList.add('hidden');
+        }
+      }
+    }
+
+    updateSlides();
+
+    function buildDuoCarouselTracks() {
+      const messiTrack = document.getElementById('messiCarouselTrack');
+      const ronaldoTrack = document.getElementById('ronaldoCarouselTrack');
+      if (!messiTrack || !ronaldoTrack) return;
+      function createItem(filename, alt, fullFilename, fallbackImg) {
+        const item = document.createElement('div');
+        item.className = 'duo-carousel-item';
+        const card = document.createElement('div');
+        card.className = 'duo-card';
+        const src = 'assets/' + encodeURI(fullFilename ? filename : filename + DUO_CAROUSEL_EXT);
+        const img = document.createElement('img');
+        img.src = src;
+        img.alt = fullFilename && filename.toUpperCase().endsWith('.AVIF') ? (alt === 'Ronaldo' ? 'Ronaldo' : 'Messi') : alt;
+        img.onerror = function () {
+          this.onerror = null;
+          this.src = fallbackImg || DUO_FALLBACK_IMG;
+        };
+        card.appendChild(img);
+        item.appendChild(card);
+        return item;
+      }
+      messiTrack.innerHTML = '';
+      DUO_CAROUSEL_MESSI_IMAGES.forEach(function (name) {
+        messiTrack.appendChild(createItem(name, 'Messi', true, DUO_FALLBACK_IMG));
+      });
+      ronaldoTrack.innerHTML = '';
+      DUO_CAROUSEL_RONALDO_IMAGES.forEach(function (name) {
+        ronaldoTrack.appendChild(createItem(name, 'Ronaldo', true, DUO_FALLBACK_IMG_RONALDO));
+      });
+      function updateTimelineYearFromScroll(wrap, titles) {
+        var cardWidth = 260;
+        var gap = 24;
+        var step = cardWidth + gap;
+        var index = Math.round(wrap.scrollLeft / step);
+        var newYearIndex = 0;
+        for (var i = titles.length - 1; i >= 0; i--) {
+          if (index >= titles[i].start) {
+            newYearIndex = i;
+            break;
+          }
+        }
+        if (newYearIndex !== currentTimelineYearIndex) {
+          currentTimelineYearIndex = newYearIndex;
+          document.getElementById("timelineYearTitle").textContent = titles[newYearIndex].title;
+        }
+      }
+      var messiWrap = document.getElementById("messiCarouselTrack").closest(".duo-carousel-track-wrap");
+      if (messiWrap) {
+        messiWrap.addEventListener("scroll", function () {
+          updateTimelineYearFromScroll(messiWrap, TIMELINE_MESSI_TITLES);
+        });
+      }
+      var ronaldoWrap = document.getElementById("ronaldoCarouselTrack").closest(".duo-carousel-track-wrap");
+      if (ronaldoWrap) {
+        ronaldoWrap.addEventListener("scroll", function () {
+          updateTimelineYearFromScroll(ronaldoWrap, TIMELINE_RONALDO_TITLES);
+        });
+      }
+      var cardWidth = 260;
+      var gap = 24;
+      var step = cardWidth + gap;
+      document.querySelectorAll('.duo-carousel-track-wrap').forEach(function (wrap) {
+        var track = wrap.querySelector('.duo-carousel-track');
+        if (!track) return;
+        function clamp() {
+          var maxScroll = Math.max(0, track.offsetWidth - wrap.clientWidth);
+          var target = Math.max(0, Math.min(wrap.scrollLeft, maxScroll));
+          if (wrap.scrollLeft !== target) wrap.scrollLeft = target;
+        }
+        function clampRAF() {
+          requestAnimationFrame(clamp);
+        }
+        wrap.addEventListener('scroll', clampRAF, { passive: true });
+        window.addEventListener('resize', clampRAF);
+        if ('onscrollend' in wrap) wrap.addEventListener('scrollend', clamp);
+        clamp();
+        setTimeout(clamp, 0);
+        setTimeout(clamp, 300);
+      });
+      document.querySelectorAll('.duo-carousel-next').forEach(function (btn) {
+        var wrap = btn.previousElementSibling;
+        if (!wrap || !wrap.classList.contains('duo-carousel-track-wrap')) return;
+        btn.addEventListener('click', function () {
+          var track = wrap.querySelector('.duo-carousel-track');
+          if (!track) return;
+          var maxScroll = Math.max(0, track.offsetWidth - wrap.clientWidth);
+          var target = Math.min(wrap.scrollLeft + step, maxScroll);
+          wrap.scrollTo({ left: target, behavior: 'smooth' });
+        });
+      });
+    }
+    buildDuoCarouselTracks();
+
+    (function () {
+      const page1 = document.getElementById("messiPage1");
+      const page2 = document.getElementById("messiPage2");
+      const page3 = document.getElementById("messiPage3");
+      const nextBtn = document.getElementById("bioNextBtn");
+      const prevBtn = document.getElementById("bioPrevBtn");
+      let currentBioPage = 1;
+      if (nextBtn && prevBtn && page1 && page2 && page3) {
+        prevBtn.style.display = "none";
+        nextBtn.addEventListener("click", function () {
+          if (currentBioPage === 1) {
+            page1.classList.remove("active");
+            page2.classList.add("active");
+            currentBioPage = 2;
+            prevBtn.style.display = "";
+          } else if (currentBioPage === 2) {
+            page2.classList.remove("active");
+            page3.classList.add("active");
+            currentBioPage = 3;
+            nextBtn.style.display = "none";
+          }
+        });
+        prevBtn.addEventListener("click", function () {
+          if (currentBioPage === 2) {
+            page2.classList.remove("active");
+            page1.classList.add("active");
+            currentBioPage = 1;
+            prevBtn.style.display = "none";
+          } else if (currentBioPage === 3) {
+            page3.classList.remove("active");
+            page2.classList.add("active");
+            currentBioPage = 2;
+            nextBtn.style.display = "";
+          }
+        });
+      }
+    })();
+
+    (function () {
+      const rPage1 = document.getElementById("ronaldoPage1");
+      const rPage2 = document.getElementById("ronaldoPage2");
+      const rPage3 = document.getElementById("ronaldoPage3");
+      const rNextBtn = document.getElementById("ronaldoNextBtn");
+      const rPrevBtn = document.getElementById("ronaldoPrevBtn");
+      let rCurrentPage = 1;
+      if (rNextBtn && rPrevBtn && rPage1 && rPage2 && rPage3) {
+        rNextBtn.addEventListener("click", function () {
+          if (rCurrentPage === 1) {
+            rPage1.classList.remove("active");
+            rPage2.classList.add("active");
+            rCurrentPage = 2;
+            rPrevBtn.style.display = "";
+          } else if (rCurrentPage === 2) {
+            rPage2.classList.remove("active");
+            rPage3.classList.add("active");
+            rCurrentPage = 3;
+            rNextBtn.style.display = "none";
+          }
+        });
+        rPrevBtn.addEventListener("click", function () {
+          if (rCurrentPage === 2) {
+            rPage2.classList.remove("active");
+            rPage1.classList.add("active");
+            rCurrentPage = 1;
+            rPrevBtn.style.display = "none";
+          } else if (rCurrentPage === 3) {
+            rPage3.classList.remove("active");
+            rPage2.classList.add("active");
+            rCurrentPage = 2;
+            rNextBtn.style.display = "";
+          }
+        });
+      }
+    })();
+
+    // Duo comparison slider (only when section is visible; drag on divider only)
+    let duoSliderPercent = 50;
+    function applyDuoSlider(percent) {
+      percent = Math.max(5, Math.min(95, percent));
+      duoSliderPercent = percent;
+
+      if (duoDivider)
+        duoDivider.style.left = percent + '%';
+
+      if (duoMessiContainer)
+        duoMessiContainer.style.width = percent + '%';
+
+      const duoRonaldoContainer = document.querySelector('.duo-ronaldo');
+      if (duoRonaldoContainer)
+        duoRonaldoContainer.style.width = (100 - percent) + '%';
+
+      let messiOpacity = 0;
+      let ronaldoOpacity = 0;
+
+      if (percent < 30) {
+        messiOpacity = 0;
+        ronaldoOpacity = 1;
+      } else if (percent > 70) {
+        messiOpacity = 1;
+        ronaldoOpacity = 0;
+      }
+
+      if (duoMessiText)
+        duoMessiText.style.opacity = messiOpacity;
+
+      if (duoRonaldoText)
+        duoRonaldoText.style.opacity = ronaldoOpacity;
+    }
+    if (duoDivider) {
+      applyDuoSlider(50);
+      let duoDragging = false;
+      function duoDragStart(clientX) {
+        duoDragging = true;
+      }
+      function duoDragMove(clientX) {
+        if (!duoDragging || !duoComparisonSection) return;
+        const rect = duoComparisonSection.getBoundingClientRect();
+        const p = ((clientX - rect.left) / rect.width) * 100;
+        applyDuoSlider(p);
+      }
+      function duoDragEnd() {
+        duoDragging = false;
+      }
+      duoDivider.addEventListener('mousedown', (e) => { e.preventDefault(); duoDragStart(e.clientX); });
+      document.addEventListener('mousemove', (e) => duoDragMove(e.clientX));
+      document.addEventListener('mouseup', duoDragEnd);
+      duoDivider.addEventListener('touchstart', (e) => { e.preventDefault(); duoDragStart(e.touches[0].clientX); }, { passive: false });
+      document.addEventListener('touchmove', (e) => { if (duoDragging) duoDragMove(e.touches[0].clientX); }, { passive: true });
+      document.addEventListener('touchend', duoDragEnd);
+    }
+
+    let mouse = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
+    let smoothMouse = { x: mouse.x, y: mouse.y };
+    let prevMouse = { x: mouse.x, y: mouse.y };
+    let velocity = 0;
+    let echoes = [];
+
+    function resize() {
+      const dpr = window.devicePixelRatio || 1;
+      gridCanvas.width = window.innerWidth * dpr;
+      gridCanvas.height = window.innerHeight * dpr;
+      gridCanvas.style.width = window.innerWidth + 'px';
+      gridCanvas.style.height = window.innerHeight + 'px';
+      gridCtx.scale(dpr, dpr);
+
+      echoCanvas.width = window.innerWidth * dpr;
+      echoCanvas.height = window.innerHeight * dpr;
+      echoCanvas.style.width = window.innerWidth + 'px';
+      echoCanvas.style.height = window.innerHeight + 'px';
+      echoCtx.scale(dpr, dpr);
+    }
+
+    resize();
+    window.addEventListener('resize', resize);
+
+    document.addEventListener('mousemove', (e) => {
+      mouse.x = e.clientX;
+      mouse.y = e.clientY;
+    });
+
+    function lerp(a, b, t) {
+      return a + (b - a) * t;
+    }
+
+    function isOverImage(el, x, y) {
+      const rect = el.getBoundingClientRect();
+      return (
+        x > rect.left &&
+        x < rect.right &&
+        y > rect.top &&
+        y < rect.bottom
+      );
+    }
+
+    function isOverElement(el, sx, sy) {
+      const rect = el.getBoundingClientRect();
+      const pad = SPOTLIGHT_RADIUS * 0.6;
+      return (
+        sx > rect.left - pad &&
+        sx < rect.right + pad &&
+        sy > rect.top - pad &&
+        sy < rect.bottom + pad
+      );
+    }
+
+    function drawGrid(time) {
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+      const dpr = window.devicePixelRatio || 1;
+
+      gridCtx.save();
+      gridCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      gridCtx.clearRect(0, 0, w, h);
+
+      const spacing = 60;
+      const offsetX = ((smoothMouse.x - w / 2) / w) * 12;
+      const offsetY = ((smoothMouse.y - h / 2) / h) * 12;
+
+      gridCtx.strokeStyle = 'rgba(0, 0, 0, 0.04)';
+      gridCtx.lineWidth = 0.5;
+
+      for (let x = offsetX % spacing; x < w; x += spacing) {
+        const distFromCursor = Math.abs(x - smoothMouse.x);
+        const influence = Math.max(0, 1 - distFromCursor / 300);
+        const wave = Math.sin(time * 0.001 + x * 0.01) * influence * 4;
+
+        gridCtx.beginPath();
+        gridCtx.moveTo(x + wave, 0);
+        gridCtx.lineTo(x + wave, h);
+        gridCtx.stroke();
+      }
+
+      for (let y = offsetY % spacing; y < h; y += spacing) {
+        const distFromCursor = Math.abs(y - smoothMouse.y);
+        const influence = Math.max(0, 1 - distFromCursor / 300);
+        const wave = Math.sin(time * 0.001 + y * 0.01) * influence * 4;
+
+        gridCtx.beginPath();
+        gridCtx.moveTo(0, y + wave);
+        gridCtx.lineTo(w, y + wave);
+        gridCtx.stroke();
+      }
+
+      gridCtx.restore();
+    }
+
+    function spawnEcho(x, y) {
+      echoes.push({
+        x, y,
+        radius: SPOTLIGHT_RADIUS,
+        alpha: 0.3,
+        life: 1
+      });
+    }
+
+    function drawEchoes() {
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+      const dpr = window.devicePixelRatio || 1;
+
+      echoCtx.save();
+      echoCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      echoCtx.clearRect(0, 0, w, h);
+
+      for (let i = echoes.length - 1; i >= 0; i--) {
+        const echo = echoes[i];
+        echo.life -= 0.025;
+        echo.alpha = echo.life * 0.2;
+        echo.radius += 0.5;
+
+        if (echo.life <= 0) {
+          echoes.splice(i, 1);
+          continue;
+        }
+
+        echoCtx.beginPath();
+        echoCtx.arc(echo.x, echo.y, echo.radius, 0, Math.PI * 2);
+        echoCtx.strokeStyle = `rgba(100, 100, 100, ${echo.alpha})`;
+        echoCtx.lineWidth = 1.5;
+        echoCtx.stroke();
+      }
+
+      echoCtx.restore();
+    }
+
+    const parallaxOffsets = new WeakMap();
+
+    function doFlip(slide) {
+      const inner = slide.querySelector('.slide-inner');
+      const baseImg = slide.querySelector('.layer-base img');
+      const revealImg = slide.querySelector('.layer-reveal img');
+      const backImg = slide.querySelector('.card-face--back img');
+      if (!inner || !baseImg || !revealImg || inner.classList.contains('is-flipping')) return;
+      inner.classList.add('is-flipping');
+      const translate = parallaxOffsets.get(inner) || '';
+      const isFlipped = inner.dataset.flipped === 'true';
+      function onFlipTransitionEnd(ev) {
+        if (ev.target !== inner || ev.propertyName !== 'transform') return;
+        inner.removeEventListener('transitionend', onFlipTransitionEnd);
+        inner.classList.remove('is-flipping');
+        if (isFlipped) {
+          inner.dataset.flipped = 'false';
+          inner.style.transform = '';
+        } else {
+          const baseSrc = baseImg.src;
+          const revealSrc = revealImg.src;
+          baseImg.src = revealSrc;
+          revealImg.src = baseSrc;
+          revealImg.style.clipPath = 'circle(0px at 0 0)';
+          inner.dataset.flipped = 'true';
+          inner.style.transform = `${translate} rotateY(180deg)`;
+        }
+      }
+      inner.addEventListener('transitionend', onFlipTransitionEnd);
+      if (isFlipped) {
+        const baseSrc = baseImg.src;
+        const revealSrc = revealImg.src;
+        baseImg.src = revealSrc;
+        revealImg.src = baseSrc;
+        revealImg.style.clipPath = 'circle(0px at 0 0)';
+        if (backImg) backImg.src = revealImg.src;
+        inner.style.transform = `${translate} rotateY(0deg)`;
+      } else {
+        inner.style.transform = `${translate} rotateY(180deg)`;
+      }
+    }
+
+    function animate(time) {
+      requestAnimationFrame(animate);
+
+      smoothMouse.x = lerp(smoothMouse.x, mouse.x, 0.08);
+      smoothMouse.y = lerp(smoothMouse.y, mouse.y, 0.08);
+
+      const dx = mouse.x - prevMouse.x;
+      const dy = mouse.y - prevMouse.y;
+      velocity = Math.sqrt(dx * dx + dy * dy);
+      prevMouse.x = mouse.x;
+      prevMouse.y = mouse.y;
+
+      const centerSlide = document.querySelector('.slide--center');
+      const centerBaseImg = centerSlide ? centerSlide.querySelector('.layer-base img') : null;
+      const centerRevealLayer = centerSlide ? centerSlide.querySelector('.layer-reveal') : null;
+
+      const overImage = centerBaseImg ? isOverImage(centerBaseImg, mouse.x, mouse.y) : false;
+
+      if (overImage && !spotlightActive) {
+        spotlightActive = true;
+        document.body.style.cursor = 'none';
+        spotlightRing.style.opacity = '1';
+        cursorDot.style.opacity = '1';
+      } else if (!overImage && spotlightActive) {
+        spotlightActive = false;
+        document.body.style.cursor = '';
+        spotlightRing.style.opacity = '0';
+        cursorDot.style.opacity = '0';
+      }
+
+      if (centerRevealLayer) {
+        const revealImg = centerRevealLayer.querySelector('img');
+        if (revealImg) {
+          if (spotlightActive) {
+            const rect = revealImg.getBoundingClientRect();
+            const localX = mouse.x - rect.left;
+            const localY = mouse.y - rect.top;
+            revealImg.style.clipPath =
+              `circle(${SPOTLIGHT_RADIUS}px at ${localX}px ${localY}px)`;
+          } else {
+            revealImg.style.clipPath = 'circle(0px at 0 0)';
+          }
+        }
+      }
+
+      spotlightRing.style.left = smoothMouse.x + 'px';
+      spotlightRing.style.top = smoothMouse.y + 'px';
+      cursorDot.style.left = mouse.x + 'px';
+      cursorDot.style.top = mouse.y + 'px';
+
+      // Parallax
+      const cx = (smoothMouse.x - window.innerWidth / 2) / window.innerWidth;
+      const cy = (smoothMouse.y - window.innerHeight / 2) / window.innerHeight;
+
+      for (let i = 0; i < slides.length; i++) {
+        if (slides[i].style.display === 'none') continue;
+        const inner = slides[i].querySelector('.slide-inner');
+        if (inner) {
+          const tx = -cx * PARALLAX_STRENGTH;
+          const ty = -cy * PARALLAX_STRENGTH;
+          parallaxOffsets.set(inner, `translate(${tx}px, ${ty}px)`);
+          if (!inner.classList.contains('is-flipping')) {
+            const t = parallaxOffsets.get(inner);
+            inner.style.transform = inner.dataset.flipped === 'true' ? `${t} rotateY(180deg)` : t;
+          }
+        }
+      }
+
+      nameBlock.style.transform = `translate(${-cx * PARALLAX_STRENGTH * 0.5}px, ${-cy * PARALLAX_STRENGTH * 0.5}px)`;
+
+      // Text inversion only when spotlight is active and overlapping
+      if (spotlightActive && isOverElement(nameBlock, smoothMouse.x, smoothMouse.y)) {
+        nameBlock.classList.add('inverted');
+      } else {
+        nameBlock.classList.remove('inverted');
+      }
+
+      // Spawn echoes only when spotlight is active
+      echoTimer++;
+      if (spotlightActive && velocity > 8 && echoTimer % 3 === 0) {
+        spawnEcho(smoothMouse.x, smoothMouse.y);
+      }
+
+      drawGrid(time);
+      drawEchoes();
+    }
+
+    requestAnimationFrame(animate);
+  </script>
+</body>
+</html>
