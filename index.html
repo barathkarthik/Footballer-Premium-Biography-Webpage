@@ -12,9 +12,13 @@
       box-sizing: border-box;
     }
 
+    html {
+      scroll-behavior: smooth;
+    }
     html, body {
       width: 100%;
       height: 100%;
+      overflow-x: hidden;
       background-color: #fff;
       background-image:
         linear-gradient(#f7f7f7 1px, transparent 1px),
@@ -40,7 +44,7 @@
       top: 0;
       left: 50%;
       transform: translateX(-50%);
-      width: 70vw;
+      width: 60vw;
       height: 100%;
       z-index: 2;
       pointer-events: auto;
@@ -51,8 +55,8 @@
       top: 50%;
       left: 50%;
       transform-origin: center;
-      width: 55%;
-      max-width: 580px;
+      width: 48%;
+      max-width: 500px;
       height: auto;
       transition: transform 0.5s ease, opacity 0.5s ease;
       will-change: transform, opacity;
@@ -243,20 +247,23 @@
     /* Name — top left */
     .name {
       position: absolute;
-      top: 48px;
+      bottom: 48px;
       left: 48px;
       pointer-events: auto;
       will-change: transform;
     }
 
     .name .line {
-      display: block;
+      display: inline;
       font-size: clamp(28px, 4vw, 56px);
       font-weight: 700;
       line-height: 1.05;
       letter-spacing: 0.02em;
       color: #111;
       transition: color 0.3s ease;
+    }
+    .name .line:not(:last-child)::after {
+      content: '\00a0';
     }
 
     /* Inverted state when spotlight overlaps */
@@ -329,9 +336,10 @@
     }
     .duo-messi img,
     .duo-ronaldo img {
+      width: 100%;
       height: 100%;
-      width: auto;
-      object-fit: contain;
+      object-fit: cover;
+      object-position: center top;
       filter: drop-shadow(0 4px 20px rgba(0, 0, 0, 0.25));
     }
     .duo-divider {
@@ -409,15 +417,95 @@
       max-width: 420px;
     }
 
+    /* Stats comparison – Messi vs Ronaldo numbers */
+    .stats-comparison {
+      width: 100%;
+      margin: 0 auto 140px auto;
+      padding: 0 40px;
+    }
+    .stats-comparison-inner {
+      display: flex;
+      align-items: stretch;
+      justify-content: center;
+      gap: 48px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .stats-img-wrap {
+      flex: 0 0 auto;
+      display: flex;
+      align-items: stretch;
+      justify-content: center;
+      min-height: 0;
+    }
+    @keyframes playerFloat {
+      0% { transform: translateY(0px) scale(calc(var(--player-scale, 1) * var(--player-base, 1))); }
+      50% { transform: translateY(-12px) scale(calc(var(--player-scale, 1) * var(--player-base, 1))); }
+      100% { transform: translateY(0px) scale(calc(var(--player-scale, 1) * var(--player-base, 1))); }
+    }
+    .stats-img-wrap img {
+      height: 100%;
+      width: auto;
+      object-fit: contain;
+      animation: playerFloat 6s ease-in-out infinite;
+      transform-origin: bottom center;
+    }
+    .stats-img-left img {
+      --player-base: 1.05;
+    }
+    .stats-img-right img {
+      --player-base: 1.35;
+    }
+    .stats-content {
+      flex: 1 1 auto;
+      max-width: 900px;
+    }
+    .stats-title {
+      font-size: 40px;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 80px;
+    }
+    .stat-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 32px 0;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.15);
+    }
+    .stat-left,
+    .stat-right {
+      font-size: 56px;
+      font-weight: 800;
+      color: #111;
+      width: 200px;
+      text-align: center;
+    }
+    .stat-winning {
+      color: #19e28f;
+      text-shadow:
+        0 0 8px rgba(25, 226, 143, 0.6),
+        0 0 18px rgba(25, 226, 143, 0.4);
+    }
+    .stat-label {
+      background: #19e28f;
+      color: #111;
+      padding: 6px 16px;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-align: center;
+    }
+
     /* Duo carousels – Netflix-style centered, 4 cards visible, no scroll past end */
-    #duo-carousels {
+    #timeline-section {
       width: 100%;
       padding: 0 0 140px 0;
       display: flex;
       flex-direction: column;
       align-items: center;
     }
-    #duo-carousels.duo-carousels.hidden {
+    #timeline-section.duo-carousels.hidden {
       display: none;
     }
     #timelineYearTitle {
@@ -614,9 +702,79 @@
         order: -1;
       }
     }
+
+    .hero,
+    .messi-biography,
+    .ronaldo-biography,
+    .stats-comparison,
+    #timeline-section {
+      overflow-x: hidden;
+    }
+
+    .carousel,
+    .slide {
+      max-width: 100vw;
+    }
+
+    .floating-nav {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 9999;
+      width: 92%;
+      max-width: 1400px;
+      transition: transform 0.3s ease;
+    }
+    .floating-nav.nav-hidden {
+      transform: translate(-50%, -120%);
+    }
+    .nav-container {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      padding: 18px 48px;
+      width: 100%;
+      backdrop-filter: blur(14px);
+      background: rgba(255, 255, 255, 0.35);
+      border-radius: 40px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.5);
+    }
+    .nav-item {
+      text-decoration: none;
+      font-family: "Playfair Display", serif;
+      font-size: 18px;
+      font-weight: 500;
+      color: #111;
+      letter-spacing: 1px;
+      transition: all 0.25s ease;
+    }
+    .nav-item:hover {
+      opacity: 0.6;
+      transform: translateY(-1px);
+    }
+
+    section {
+      scroll-margin-top: 120px;
+    }
+
+    img {
+      max-width: 100%;
+      height: auto;
+    }
   </style>
 </head>
 <body>
+  <header class="floating-nav">
+    <nav class="nav-container">
+      <a href="#hero" class="nav-item">Home</a>
+      <a href="#duo-comparison" class="nav-item">About</a>
+      <a href="#messi-biography" class="nav-item">Career</a>
+      <a href="#stats-comparison" class="nav-item">Stats</a>
+      <a href="#timeline-section" class="nav-item">Timeline</a>
+    </nav>
+  </header>
   <div class="hero" id="hero">
 
     <!-- Animated background grid -->
@@ -862,7 +1020,61 @@
     </div>
   </section>
 
-  <section id="duo-carousels" class="duo-carousels hidden">
+  <section id="stats-comparison" class="stats-comparison">
+    <div class="stats-comparison-inner">
+      <div class="stats-img-wrap stats-img-left">
+        <img src="assets/Messi stats png.PNG" alt="Lionel Messi">
+      </div>
+      <div class="stats-content">
+        <h2 class="stats-title">The Numbers Behind the Rivalry</h2>
+        <div class="stat-row">
+          <span class="stat-left" data-target="805">0</span>
+          <span class="stat-label">GOALS</span>
+          <span class="stat-right" data-target="873">0</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-left" data-target="357">0</span>
+          <span class="stat-label">ASSISTS</span>
+          <span class="stat-right" data-target="248">0</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-left" data-target="44">0</span>
+          <span class="stat-label">TOTAL TROPHIES</span>
+          <span class="stat-right" data-target="35">0</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-left" data-target="8">0</span>
+          <span class="stat-label">BALLON D'OR</span>
+          <span class="stat-right" data-target="5">0</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-left" data-target="6">0</span>
+          <span class="stat-label">EUROPEAN GOLDEN BOOTS</span>
+          <span class="stat-right" data-target="4">0</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-left" data-target="4">0</span>
+          <span class="stat-label">CHAMPIONS LEAGUE TITLES</span>
+          <span class="stat-right" data-target="5">0</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-left" data-target="129">0</span>
+          <span class="stat-label">INTERNATIONAL GOALS</span>
+          <span class="stat-right" data-target="136">0</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-left" data-target="1">0</span>
+          <span class="stat-label">WORLD CUPS</span>
+          <span class="stat-right" data-target="0">0</span>
+        </div>
+      </div>
+      <div class="stats-img-wrap stats-img-right">
+        <img src="assets/Ronaldo stats png.PNG" alt="Cristiano Ronaldo">
+      </div>
+    </div>
+  </section>
+
+  <section id="timeline-section" class="duo-carousels hidden">
     <h2 id="timelineYearTitle">2009 — The Beginning of a Dynasty</h2>
     <div class="duo-carousel-row">
       <div class="duo-carousel-track-wrap">
@@ -892,7 +1104,7 @@
     const nameBlock = document.getElementById('nameBlock');
     const nameLines = nameBlock.querySelectorAll('.line');
     const duoComparisonSection = document.getElementById('duo-comparison');
-    const duoCarouselsSection = document.getElementById('duo-carousels');
+    const duoCarouselsSection = document.getElementById('timeline-section');
     const duoMessiContainer = document.getElementById('duoMessiContainer');
     const duoDivider = document.getElementById('duoDivider');
     const duoMessiText = document.getElementById('duoMessiText');
@@ -1731,6 +1943,76 @@
       drawGrid(time);
       drawEchoes();
     }
+
+    function animateNumber(el) {
+      const target = +el.dataset.target;
+      const duration = 1200;
+      const start = performance.now();
+      function update(time) {
+        const progress = Math.min((time - start) / duration, 1);
+        const value = Math.floor(progress * target);
+        el.textContent = value.toLocaleString();
+        if (progress < 1) {
+          requestAnimationFrame(update);
+        } else {
+          el.textContent = target.toLocaleString();
+        }
+      }
+      requestAnimationFrame(update);
+    }
+
+    function highlightWinningStats() {
+      document.querySelectorAll('.stat-row').forEach(row => {
+        const left = row.querySelector('.stat-left');
+        const right = row.querySelector('.stat-right');
+        const leftVal = +left.dataset.target;
+        const rightVal = +right.dataset.target;
+        if (leftVal > rightVal) {
+          left.classList.add('stat-winning');
+        } else if (rightVal > leftVal) {
+          right.classList.add('stat-winning');
+        }
+      });
+    }
+
+    const statsSection = document.querySelector('.stats-comparison');
+    let statsAnimated = false;
+    const statsObserver = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting && !statsAnimated) {
+          document.querySelectorAll('.stat-left, .stat-right').forEach(el => animateNumber(el));
+          highlightWinningStats();
+          statsAnimated = true;
+        }
+      });
+    }, { threshold: 0.35 });
+    if (statsSection) statsObserver.observe(statsSection);
+
+    window.addEventListener('scroll', () => {
+      const section = document.querySelector('.stats-comparison');
+      if (!section) return;
+      const rect = section.getBoundingClientRect();
+      const progress = Math.min(Math.max(1 - rect.top / window.innerHeight, 0), 1);
+      const scale = 1 + progress * 0.08;
+      document.querySelectorAll('.stats-img-wrap img').forEach(img => {
+        img.style.setProperty('--player-scale', scale);
+      });
+    });
+
+    /* NAVBAR AUTO HIDE ON SCROLL */
+    const navBar = document.querySelector(".floating-nav");
+    let lastScrollY = window.scrollY;
+    window.addEventListener("scroll", () => {
+      const currentScrollY = window.scrollY;
+      if (navBar) {
+        if (currentScrollY > lastScrollY && currentScrollY > 120) {
+          navBar.classList.add("nav-hidden");
+        } else {
+          navBar.classList.remove("nav-hidden");
+        }
+      }
+      lastScrollY = currentScrollY;
+    });
 
     requestAnimationFrame(animate);
   </script>
