@@ -14,9 +14,12 @@
 
     html {
       scroll-behavior: smooth;
+      overflow-y: scroll;
     }
     html, body {
       width: 100%;
+      min-width: 100%;
+      margin: 0;
       height: 100%;
       overflow-x: hidden;
       background-color: #fff;
@@ -29,7 +32,8 @@
 
     .hero {
       position: relative;
-      width: 100vw;
+      width: 100%;
+      max-width: 100%;
       height: 100vh;
       overflow: hidden;
       background-color: #fff;
@@ -420,23 +424,33 @@
     /* Stats comparison – Messi vs Ronaldo numbers */
     .stats-comparison {
       width: 100%;
-      margin: 0 auto 140px auto;
+      max-width: 100%;
+      margin: 0 auto 120px auto;
       padding: 0 40px;
+      box-sizing: border-box;
+      overflow: hidden;
     }
     .stats-comparison-inner {
-      display: flex;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      grid-auto-rows: minmax(80vh, auto);
       align-items: stretch;
-      justify-content: center;
       gap: 48px;
-      max-width: 1200px;
-      margin: 0 auto;
+      width: 100%;
+      box-sizing: border-box;
+      overflow: hidden;
     }
     .stats-img-wrap {
-      flex: 0 0 auto;
+      height: 100%;
+      max-height: 100%;
+      width: auto;
+      max-width: 100%;
+      aspect-ratio: 474 / 1010;
       display: flex;
-      align-items: stretch;
+      align-items: center;
       justify-content: center;
-      min-height: 0;
+      margin: 0 auto;
+      overflow: hidden;
     }
     @keyframes playerFloat {
       0% { transform: translateY(0px) scale(calc(var(--player-scale, 1) * var(--player-base, 1))); }
@@ -445,16 +459,21 @@
     }
     .stats-img-wrap img {
       height: 100%;
-      width: auto;
+      width: 100%;
       object-fit: contain;
+      object-position: center;
       animation: playerFloat 6s ease-in-out infinite;
       transform-origin: bottom center;
     }
     .stats-img-left img {
-      --player-base: 1.05;
+      --player-base: 1.18;
+      object-position: bottom center;
     }
     .stats-img-right img {
       --player-base: 1.35;
+    }
+    .stats-img-right {
+      margin-top: 90px;
     }
     .stats-content {
       flex: 1 1 auto;
@@ -500,7 +519,7 @@
     /* Duo carousels – Netflix-style centered, 4 cards visible, no scroll past end */
     #timeline-section {
       width: 100%;
-      padding: 0 0 140px 0;
+      padding: 60px 0 40px 0;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -521,6 +540,9 @@
       position: relative;
       width: min(1200px, 90vw);
       margin-bottom: 140px;
+    }
+    .duo-carousel-row:last-child {
+      margin-bottom: 48px;
     }
     .duo-carousel-next {
       position: absolute;
@@ -762,6 +784,186 @@
     img {
       max-width: 100%;
       height: auto;
+    }
+
+    .vote-arena {
+      width: 100%;
+      min-height: 100vh;
+      padding: 24px 40px 40px 40px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      max-width: 100%;
+      margin: 0 auto;
+      text-align: center;
+    }
+    .vote-title {
+      font-size: 40px;
+      margin-bottom: 28px;
+      font-weight: 700;
+    }
+    .vote-grid {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      justify-items: center;
+      gap: 60px;
+      width: 100%;
+      margin: -20px auto 0 auto;
+      padding: 0;
+    }
+    .vote-player {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      text-align: center;
+      width: 100%;
+    }
+    .vote-arena .player-img {
+      height: min(1000px, 85vh);
+      width: 100%;
+      max-width: 100%;
+      object-fit: contain;
+      filter: drop-shadow(0 10px 28px rgba(0, 0, 0, 0.18));
+    }
+    .donut-row {
+      margin-top: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 28px;
+      flex-wrap: nowrap;
+    }
+    .donut-chart {
+      width: 120px;
+      text-align: center;
+    }
+    .donut-circle-wrap {
+      position: relative;
+      width: 120px;
+      height: 120px;
+      margin: 0 auto;
+    }
+    .donut-chart svg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 120px;
+      height: 120px;
+      transform: rotate(-90deg);
+    }
+    .donut-bg {
+      fill: none;
+      stroke: #eee;
+      stroke-width: 10;
+    }
+    .donut-progress {
+      fill: none;
+      stroke: #19e28f;
+      stroke-width: 10;
+      stroke-linecap: round;
+      transition: stroke-dashoffset 1s ease;
+    }
+    .donut-text {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-weight: 700;
+      font-size: 1.5rem;
+      margin: 0;
+      pointer-events: none;
+    }
+    .donut-label {
+      margin-top: 12px;
+      font-size: 15px;
+      opacity: 0.7;
+    }
+    .vote-center {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 28px;
+      min-width: 200px;
+    }
+    .vote-btn {
+      padding: 18px 40px;
+      border-radius: 48px;
+      border: none;
+      background: #111;
+      color: white;
+      font-size: 20px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+    .vote-btn:hover {
+      transform: scale(1.05);
+    }
+    .vote-vs {
+      font-weight: 700;
+      font-size: 28px;
+    }
+
+    /* Legacy footer – cinematic documentary ending */
+    .legacy-footer {
+      width: 100%;
+      padding: 180px 40px 80px;
+      text-align: center;
+      position: relative;
+      background: #111;
+    }
+    .legacy-inner {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .legacy-title h2 {
+      font-size: clamp(42px, 6vw, 84px);
+      line-height: 1.1;
+      font-weight: 700;
+      margin-bottom: 40px;
+      color: #fff;
+    }
+    .legacy-description {
+      font-size: clamp(16px, 1.3vw, 20px);
+      line-height: 1.7;
+      color: rgba(255, 255, 255, 0.7);
+      margin-bottom: 70px;
+    }
+    .legacy-links {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      flex-wrap: wrap;
+    }
+    .legacy-links a {
+      text-decoration: none;
+      font-size: 16px;
+      letter-spacing: 1px;
+      color: #fff;
+      position: relative;
+      transition: opacity 0.25s ease;
+    }
+    .legacy-links a:hover {
+      opacity: 0.6;
+    }
+    .legacy-bottom {
+      margin-top: 120px;
+      padding-top: 24px;
+      border-top: 1px solid rgba(255, 255, 255, 0.15);
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.5);
+    }
+    @media (max-width: 768px) {
+      .legacy-footer {
+        padding: 120px 30px 60px;
+      }
+      .legacy-links {
+        gap: 24px;
+      }
     }
   </style>
 </head>
@@ -1087,6 +1289,109 @@
         <div class="duo-carousel-track" id="ronaldoCarouselTrack"></div>
       </div>
       <button type="button" class="duo-carousel-next" aria-label="Next image">→</button>
+    </div>
+  </section>
+
+  <section class="vote-arena">
+    <h2 class="vote-title">Who Defines This Era?</h2>
+    <div class="vote-grid">
+      <div class="vote-player">
+        <img src="assets/Messi kicking.png" class="player-img" alt="Lionel Messi">
+        <div class="donut-row">
+          <div class="donut-chart">
+            <div class="donut-circle-wrap">
+              <svg width="90" height="90" viewBox="0 0 90 90">
+                <circle class="donut-bg" cx="45" cy="45" r="36"></circle>
+                <circle class="donut-progress" cx="45" cy="45" r="36" data-percent="92"></circle>
+              </svg>
+              <span class="donut-text">92%</span>
+            </div>
+            <p class="donut-label">Goals</p>
+          </div>
+          <div class="donut-chart">
+            <div class="donut-circle-wrap">
+              <svg width="90" height="90" viewBox="0 0 90 90">
+                <circle class="donut-bg" cx="45" cy="45" r="36"></circle>
+                <circle class="donut-progress" cx="45" cy="45" r="36" data-percent="95"></circle>
+              </svg>
+              <span class="donut-text">95%</span>
+            </div>
+            <p class="donut-label">Assists</p>
+          </div>
+          <div class="donut-chart">
+            <div class="donut-circle-wrap">
+              <svg width="90" height="90" viewBox="0 0 90 90">
+                <circle class="donut-bg" cx="45" cy="45" r="36"></circle>
+                <circle class="donut-progress" cx="45" cy="45" r="36" data-percent="90"></circle>
+              </svg>
+              <span class="donut-text">90%</span>
+            </div>
+            <p class="donut-label">Trophies</p>
+          </div>
+        </div>
+      </div>
+      <div class="vote-center">
+        <button type="button" class="vote-btn vote-messi">Vote Messi</button>
+        <span class="vote-vs">VS</span>
+        <button type="button" class="vote-btn vote-ronaldo">Vote Ronaldo</button>
+      </div>
+      <div class="vote-player">
+        <img src="assets/Cristiano_vote.png" class="player-img" alt="Cristiano Ronaldo">
+        <div class="donut-row">
+          <div class="donut-chart">
+            <div class="donut-circle-wrap">
+              <svg width="90" height="90" viewBox="0 0 90 90">
+                <circle class="donut-bg" cx="45" cy="45" r="36"></circle>
+                <circle class="donut-progress" cx="45" cy="45" r="36" data-percent="96"></circle>
+              </svg>
+              <span class="donut-text">96%</span>
+            </div>
+            <p class="donut-label">Goals</p>
+          </div>
+          <div class="donut-chart">
+            <div class="donut-circle-wrap">
+              <svg width="90" height="90" viewBox="0 0 90 90">
+                <circle class="donut-bg" cx="45" cy="45" r="36"></circle>
+                <circle class="donut-progress" cx="45" cy="45" r="36" data-percent="88"></circle>
+              </svg>
+              <span class="donut-text">88%</span>
+            </div>
+            <p class="donut-label">Assists</p>
+          </div>
+          <div class="donut-chart">
+            <div class="donut-circle-wrap">
+              <svg width="90" height="90" viewBox="0 0 90 90">
+                <circle class="donut-bg" cx="45" cy="45" r="36"></circle>
+                <circle class="donut-progress" cx="45" cy="45" r="36" data-percent="85"></circle>
+              </svg>
+              <span class="donut-text">85%</span>
+            </div>
+            <p class="donut-label">Trophies</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="legacy-footer">
+    <div class="legacy-inner">
+      <div class="legacy-title">
+        <h2>The Game Lives Through Its Legends</h2>
+      </div>
+      <p class="legacy-description">
+        Football is shaped by moments, rivalries, and players who redefine the sport.
+        From historic goals to unforgettable nights under stadium lights,
+        every era produces legends who inspire the next generation.
+      </p>
+      <div class="legacy-links">
+        <a href="#hero">Home</a>
+        <a href="#duo-comparison">Players</a>
+        <a href="#stats-comparison">Statistics</a>
+        <a href="#messiPage1">History</a>
+      </div>
+    </div>
+    <div class="legacy-bottom">
+      <p>Football Legends Archive — Editorial Project</p>
     </div>
   </section>
 
@@ -2013,6 +2318,18 @@
       }
       lastScrollY = currentScrollY;
     });
+
+    document.querySelectorAll(".donut-progress").forEach(circle => {
+      const radius = circle.r.baseVal.value;
+      const circumference = 2 * Math.PI * radius;
+      circle.style.strokeDasharray = circumference;
+      const percent = circle.dataset.percent;
+      const offset = circumference - (percent / 100) * circumference;
+      circle.style.strokeDashoffset = offset;
+    });
+
+    document.querySelector(".vote-messi")?.addEventListener("click", () => { console.log("Vote Messi"); });
+    document.querySelector(".vote-ronaldo")?.addEventListener("click", () => { console.log("Vote Ronaldo"); });
 
     requestAnimationFrame(animate);
   </script>
