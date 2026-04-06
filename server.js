@@ -5,6 +5,16 @@ const bcrypt = require('bcrypt');
 const { OAuth2Client } = require('google-auth-library');
 const path = require('path');
 const crypto = require('crypto');
+const fs = require('fs');
+
+// Load .env file
+const envPath = path.join(__dirname, '.env');
+if (fs.existsSync(envPath)) {
+  fs.readFileSync(envPath, 'utf8').split('\n').forEach(line => {
+    const [key, ...val] = line.split('=');
+    if (key && val.length) process.env[key.trim()] = val.join('=').trim();
+  });
+}
 
 const app = express();
 const PORT = 3000;
@@ -70,8 +80,13 @@ app.use(session({
 app.use(express.static(__dirname));
 
 // --- Google OAuth client ---
-const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID || '29200703920-mneqe244k3r3m39vv6jpod52pbs8sfv7.apps.googleusercontent.com';
+const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID || '';
 const googleClient = new OAuth2Client(GOOGLE_CLIENT_ID);
+
+// Serve Google Client ID to frontend
+app.get('/api/config', (req, res) => {
+  res.json({ googleClientId: GOOGLE_CLIENT_ID });
+});
 
 // --- Auth middleware ---
 function requireAuth(req, res, next) {

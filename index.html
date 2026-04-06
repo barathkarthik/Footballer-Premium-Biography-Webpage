@@ -1721,7 +1721,7 @@
 
   <script>
     // ===== AUTH & VOTING SYSTEM =====
-    const GOOGLE_CLIENT_ID = '29200703920-mneqe244k3r3m39vv6jpod52pbs8sfv7.apps.googleusercontent.com';
+    let GOOGLE_CLIENT_ID = '';
     let currentUser = null;
 
     // --- Modal control ---
@@ -1796,7 +1796,13 @@
       }
     }
 
-    function initGoogleSignIn() {
+    async function initGoogleSignIn() {
+      try {
+        const res = await fetch('/api/config');
+        const config = await res.json();
+        GOOGLE_CLIENT_ID = config.googleClientId;
+      } catch (err) {}
+      if (!GOOGLE_CLIENT_ID) return;
       if (typeof google === 'undefined' || !google.accounts) {
         setTimeout(initGoogleSignIn, 200);
         return;
