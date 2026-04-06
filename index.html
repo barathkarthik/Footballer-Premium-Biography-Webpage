@@ -475,6 +475,23 @@
     .stats-img-right {
       margin-top: 90px;
     }
+    .stats-img-aligned .stats-img-right {
+      margin-top: 0;
+    }
+    .stats-img-aligned .stats-img-left img {
+      --player-base: 1;
+    }
+    .stats-img-aligned .stats-img-right img {
+      --player-base: 1;
+    }
+    .stats-img-aligned .stats-img-wrap {
+      aspect-ratio: auto;
+    }
+    .stats-img-aligned .stats-img-wrap img {
+      object-fit: cover;
+      border-radius: 16px;
+      max-height: 600px;
+    }
     .stats-content {
       flex: 1 1 auto;
       max-width: 900px;
@@ -2170,6 +2187,16 @@
     function renderStats(data) {
       const statsContent = document.querySelector('.stats-content');
       if (!statsContent) return;
+
+      // Align images for non-Messi X Cristiano duos
+      const statsInner = document.querySelector('.stats-comparison-inner');
+      if (statsInner) {
+        if (data.slug === 'messi-x-cristiano') {
+          statsInner.classList.remove('stats-img-aligned');
+        } else {
+          statsInner.classList.add('stats-img-aligned');
+        }
+      }
 
       // Update images
       const leftImg = document.querySelector('.stats-img-left img');
