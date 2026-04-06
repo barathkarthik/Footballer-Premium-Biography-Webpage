@@ -753,8 +753,8 @@
     }
     .nav-container {
       display: flex;
-      justify-content: center;
-      gap: 40px;
+      align-items: center;
+      gap: 20px;
       padding: 18px 48px;
       width: 100%;
       backdrop-filter: blur(14px);
@@ -965,16 +965,252 @@
         gap: 24px;
       }
     }
+    /* --- Auth Modal --- */
+    .auth-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.45);
+      backdrop-filter: blur(4px);
+      z-index: 10000;
+      justify-content: center;
+      align-items: center;
+    }
+    .auth-overlay.active { display: flex; }
+    .auth-modal {
+      background: rgba(255,255,255,0.88);
+      backdrop-filter: blur(18px);
+      border-radius: 24px;
+      padding: 40px 36px 32px;
+      width: 90%;
+      max-width: 420px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 16px 48px rgba(0,0,0,0.18);
+      border: 1px solid rgba(255,255,255,0.5);
+      position: relative;
+    }
+    .auth-modal-close {
+      position: absolute;
+      top: 14px;
+      right: 18px;
+      background: none;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      color: #333;
+      line-height: 1;
+    }
+    .auth-modal h2 {
+      font-family: "Playfair Display", serif;
+      font-size: 28px;
+      font-weight: 700;
+      margin: 0 0 24px;
+      text-align: center;
+    }
+    .auth-row {
+      display: flex;
+      gap: 12px;
+    }
+    .auth-row .auth-field { flex: 1; }
+    .auth-field {
+      margin-bottom: 16px;
+    }
+    .auth-field label {
+      display: block;
+      font-family: "Playfair Display", serif;
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 5px;
+      color: #333;
+    }
+    .auth-input {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1.5px solid #ddd;
+      border-radius: 12px;
+      font-family: "Playfair Display", serif;
+      font-size: 15px;
+      background: rgba(255,255,255,0.7);
+      transition: border-color 0.2s;
+      box-sizing: border-box;
+    }
+    .auth-input:focus {
+      outline: none;
+      border-color: #111;
+    }
+    .auth-submit-btn {
+      width: 100%;
+      padding: 14px;
+      border-radius: 48px;
+      border: none;
+      background: #111;
+      color: white;
+      font-family: "Playfair Display", serif;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.2s;
+      margin-top: 4px;
+    }
+    .auth-submit-btn:hover { transform: scale(1.02); }
+    .auth-divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 20px 0;
+      color: #999;
+      font-size: 13px;
+    }
+    .auth-divider::before,
+    .auth-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: #ddd;
+    }
+    .auth-google-btn {
+      width: 100%;
+      padding: 12px;
+      border-radius: 48px;
+      border: 1.5px solid #ddd;
+      background: white;
+      font-family: "Playfair Display", serif;
+      font-size: 15px;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      transition: all 0.2s;
+    }
+    .auth-google-btn:hover {
+      border-color: #111;
+      background: #fafafa;
+    }
+    .auth-google-btn svg {
+      width: 20px;
+      height: 20px;
+    }
+    .auth-switch {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 14px;
+      color: #666;
+    }
+    .auth-switch a {
+      color: #111;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: underline;
+    }
+    .auth-error {
+      color: #d32f2f;
+      font-size: 13px;
+      text-align: center;
+      margin-bottom: 12px;
+      min-height: 18px;
+    }
+
+    /* --- Nav auth button --- */
+    .nav-spacer { flex: 1; }
+    .nav-links {
+      display: flex;
+      gap: 40px;
+      align-items: center;
+    }
+    .nav-auth {
+      flex: 1;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 10px;
+    }
+    .nav-auth-btn {
+      font-family: "Playfair Display", serif;
+      font-size: 15px;
+      font-weight: 600;
+      padding: 8px 22px;
+      border-radius: 40px;
+      border: 1.5px solid #111;
+      background: transparent;
+      color: #111;
+      cursor: pointer;
+      transition: all 0.25s;
+      white-space: nowrap;
+    }
+    .nav-auth-btn:hover {
+      background: #111;
+      color: white;
+    }
+    .nav-user-name {
+      font-family: "Playfair Display", serif;
+      font-size: 15px;
+      font-weight: 600;
+      color: #111;
+      white-space: nowrap;
+    }
+    .nav-auth .hidden { display: none; }
+
+    /* --- Vote counts --- */
+    .vote-counts-bar {
+      width: 100%;
+      max-width: 340px;
+      margin-bottom: 24px;
+    }
+    .vote-counts-numbers {
+      display: flex;
+      justify-content: space-between;
+      font-family: "Playfair Display", serif;
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+    .vote-bar-track {
+      width: 100%;
+      height: 10px;
+      background: #eee;
+      border-radius: 5px;
+      overflow: hidden;
+      display: flex;
+    }
+    .vote-bar-fill-messi {
+      height: 100%;
+      background: #19e28f;
+      transition: width 0.6s ease;
+    }
+    .vote-bar-fill-ronaldo {
+      height: 100%;
+      background: #111;
+      transition: width 0.6s ease;
+    }
+    .vote-status {
+      margin-top: 16px;
+      font-family: "Playfair Display", serif;
+      font-size: 14px;
+      color: #666;
+      min-height: 20px;
+    }
   </style>
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body>
   <header class="floating-nav">
     <nav class="nav-container">
-      <a href="#hero" class="nav-item">Home</a>
-      <a href="#duo-comparison" class="nav-item">About</a>
-      <a href="#messi-biography" class="nav-item">Career</a>
-      <a href="#stats-comparison" class="nav-item">Stats</a>
-      <a href="#timeline-section" class="nav-item">Timeline</a>
+      <div class="nav-spacer"></div>
+      <div class="nav-links">
+        <a href="#hero" class="nav-item">Home</a>
+        <a href="#duo-comparison" class="nav-item">About</a>
+        <a href="#messi-biography" class="nav-item">Career</a>
+        <a href="#stats-comparison" class="nav-item">Stats</a>
+        <a href="#timeline-section" class="nav-item">Timeline</a>
+      </div>
+      <div class="nav-auth">
+        <button class="nav-auth-btn" id="navLoginBtn" onclick="openAuthModal()">Login</button>
+        <span class="nav-user-name hidden" id="navUserName"></span>
+        <button class="nav-auth-btn hidden" id="navLogoutBtn" onclick="handleLogout()">Logout</button>
+      </div>
     </nav>
   </header>
   <div class="hero" id="hero">
@@ -1331,9 +1567,20 @@
         </div>
       </div>
       <div class="vote-center">
-        <button type="button" class="vote-btn vote-messi">Vote Messi</button>
+        <div class="vote-counts-bar">
+          <div class="vote-counts-numbers">
+            <span id="messiCount">0 votes</span>
+            <span id="ronaldoCount">0 votes</span>
+          </div>
+          <div class="vote-bar-track">
+            <div class="vote-bar-fill-messi" id="messiBar" style="width:50%"></div>
+            <div class="vote-bar-fill-ronaldo" id="ronaldoBar" style="width:50%"></div>
+          </div>
+        </div>
+        <button type="button" class="vote-btn vote-messi" id="voteMessi">Vote Messi</button>
         <span class="vote-vs">VS</span>
-        <button type="button" class="vote-btn vote-ronaldo">Vote Ronaldo</button>
+        <button type="button" class="vote-btn vote-ronaldo" id="voteRonaldo">Vote Ronaldo</button>
+        <p class="vote-status" id="voteStatus"></p>
       </div>
       <div class="vote-player">
         <img src="assets/Cristiano_vote.png" class="player-img" alt="Cristiano Ronaldo">
@@ -1399,7 +1646,299 @@
   <div class="spotlight-ring" id="spotlightRing"></div>
   <div class="cursor-dot" id="cursorDot"></div>
 
+  <!-- Auth Modal -->
+  <div class="auth-overlay" id="authOverlay" onclick="if(event.target===this)closeAuthModal()">
+    <div class="auth-modal">
+      <button class="auth-modal-close" onclick="closeAuthModal()">&times;</button>
+
+      <!-- Login View -->
+      <div id="loginView">
+        <h2>Welcome Back</h2>
+        <p class="auth-error" id="loginError"></p>
+        <form id="loginForm" onsubmit="handleLogin(event)">
+          <div class="auth-field">
+            <label>Email</label>
+            <input type="email" class="auth-input" id="loginEmail" required>
+          </div>
+          <div class="auth-field">
+            <label>Password</label>
+            <input type="password" class="auth-input" id="loginPassword" required>
+          </div>
+          <button type="submit" class="auth-submit-btn">Login</button>
+        </form>
+        <div class="auth-divider">or</div>
+        <div id="googleBtnLogin" style="display:flex;justify-content:center;"></div>
+        <p class="auth-switch">Don't have an account? <a onclick="showSignup()">Sign up</a></p>
+      </div>
+
+      <!-- Signup View -->
+      <div id="signupView" style="display:none">
+        <h2>Create Account</h2>
+        <p class="auth-error" id="signupError"></p>
+        <form id="signupForm" onsubmit="handleSignup(event)">
+          <div class="auth-row">
+            <div class="auth-field">
+              <label>First Name</label>
+              <input type="text" class="auth-input" id="signupFirstName" required>
+            </div>
+            <div class="auth-field">
+              <label>Last Name</label>
+              <input type="text" class="auth-input" id="signupLastName" required>
+            </div>
+          </div>
+          <div class="auth-row">
+            <div class="auth-field">
+              <label>Date of Birth</label>
+              <input type="date" class="auth-input" id="signupDob" required>
+            </div>
+            <div class="auth-field">
+              <label>Gender</label>
+              <select class="auth-input" id="signupGender" required>
+                <option value="" disabled selected>Select</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
+                <option value="Prefer not to say">Prefer not to say</option>
+              </select>
+            </div>
+          </div>
+          <div class="auth-field">
+            <label>Email</label>
+            <input type="email" class="auth-input" id="signupEmail" required>
+          </div>
+          <div class="auth-field">
+            <label>Password (min 6 characters)</label>
+            <input type="password" class="auth-input" id="signupPassword" minlength="6" required>
+          </div>
+          <button type="submit" class="auth-submit-btn">Sign Up</button>
+        </form>
+        <div class="auth-divider">or</div>
+        <div id="googleBtnSignup" style="display:flex;justify-content:center;"></div>
+        <p class="auth-switch">Already have an account? <a onclick="showLogin()">Login</a></p>
+      </div>
+    </div>
+  </div>
+
   <script>
+    // ===== AUTH & VOTING SYSTEM =====
+    const GOOGLE_CLIENT_ID = '29200703920-mneqe244k3r3m39vv6jpod52pbs8sfv7.apps.googleusercontent.com';
+    let currentUser = null;
+
+    // --- Modal control ---
+    function openAuthModal() {
+      document.getElementById('authOverlay').classList.add('active');
+      showLogin();
+    }
+    function closeAuthModal() {
+      document.getElementById('authOverlay').classList.remove('active');
+      document.getElementById('loginError').textContent = '';
+      document.getElementById('signupError').textContent = '';
+    }
+    function showLogin() {
+      document.getElementById('loginView').style.display = '';
+      document.getElementById('signupView').style.display = 'none';
+      document.getElementById('loginError').textContent = '';
+    }
+    function showSignup() {
+      document.getElementById('loginView').style.display = 'none';
+      document.getElementById('signupView').style.display = '';
+      document.getElementById('signupError').textContent = '';
+    }
+
+    // --- Auth handlers ---
+    async function handleSignup(e) {
+      e.preventDefault();
+      const errEl = document.getElementById('signupError');
+      errEl.textContent = '';
+      try {
+        const res = await fetch('/api/auth/signup', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            firstName: document.getElementById('signupFirstName').value,
+            lastName: document.getElementById('signupLastName').value,
+            dob: document.getElementById('signupDob').value,
+            gender: document.getElementById('signupGender').value,
+            email: document.getElementById('signupEmail').value,
+            password: document.getElementById('signupPassword').value
+          })
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error);
+        currentUser = data.user;
+        onAuthChange();
+        closeAuthModal();
+      } catch (err) {
+        errEl.textContent = err.message;
+      }
+    }
+
+    async function handleLogin(e) {
+      e.preventDefault();
+      const errEl = document.getElementById('loginError');
+      errEl.textContent = '';
+      try {
+        const res = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email: document.getElementById('loginEmail').value,
+            password: document.getElementById('loginPassword').value
+          })
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error);
+        currentUser = data.user;
+        onAuthChange();
+        closeAuthModal();
+      } catch (err) {
+        errEl.textContent = err.message;
+      }
+    }
+
+    function initGoogleSignIn() {
+      if (typeof google === 'undefined' || !google.accounts) {
+        setTimeout(initGoogleSignIn, 200);
+        return;
+      }
+      google.accounts.id.initialize({
+        client_id: GOOGLE_CLIENT_ID,
+        callback: handleGoogleCallback,
+        ux_mode: 'popup'
+      });
+      google.accounts.id.renderButton(
+        document.getElementById('googleBtnLogin'),
+        { theme: 'outline', size: 'large', width: 340, text: 'continue_with' }
+      );
+      google.accounts.id.renderButton(
+        document.getElementById('googleBtnSignup'),
+        { theme: 'outline', size: 'large', width: 340, text: 'continue_with' }
+      );
+    }
+    initGoogleSignIn();
+
+    async function handleGoogleCallback(response) {
+      try {
+        const res = await fetch('/api/auth/google', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ credential: response.credential })
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error);
+        currentUser = data.user;
+        onAuthChange();
+        closeAuthModal();
+      } catch (err) {
+        const errEl = document.getElementById('loginError').textContent ? document.getElementById('loginError') : document.getElementById('signupError');
+        errEl.textContent = err.message || 'Google sign-in failed';
+      }
+    }
+
+    async function handleLogout() {
+      await fetch('/api/auth/logout', { method: 'POST' });
+      currentUser = null;
+      onAuthChange();
+    }
+
+    // --- UI state ---
+    function onAuthChange() {
+      const loginBtn = document.getElementById('navLoginBtn');
+      const userName = document.getElementById('navUserName');
+      const logoutBtn = document.getElementById('navLogoutBtn');
+      const voteStatus = document.getElementById('voteStatus');
+
+      if (currentUser) {
+        loginBtn.classList.add('hidden');
+        userName.classList.remove('hidden');
+        logoutBtn.classList.remove('hidden');
+        userName.textContent = currentUser.firstName;
+        loadMyVote();
+      } else {
+        loginBtn.classList.remove('hidden');
+        userName.classList.add('hidden');
+        logoutBtn.classList.add('hidden');
+        userName.textContent = '';
+        voteStatus.textContent = '';
+      }
+      loadVoteCounts();
+    }
+
+    // --- Voting ---
+    async function castVote(player) {
+      if (!currentUser) {
+        openAuthModal();
+        return;
+      }
+      try {
+        const res = await fetch('/api/vote', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ player })
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          if (data.vote) {
+            document.getElementById('voteStatus').textContent = 'You already voted for ' + data.vote.charAt(0).toUpperCase() + data.vote.slice(1);
+          }
+          return;
+        }
+        document.getElementById('voteStatus').textContent = 'You voted for ' + player.charAt(0).toUpperCase() + player.slice(1) + '!';
+        updateVoteCounts(data.counts);
+      } catch (err) {
+        console.error('Vote error:', err);
+      }
+    }
+
+    async function loadVoteCounts() {
+      try {
+        const res = await fetch('/api/vote/counts');
+        const counts = await res.json();
+        updateVoteCounts(counts);
+      } catch (err) {
+        console.error('Failed to load counts:', err);
+      }
+    }
+
+    function updateVoteCounts(counts) {
+      const m = counts.messi || 0;
+      const r = counts.ronaldo || 0;
+      const total = m + r;
+      document.getElementById('messiCount').textContent = m + ' vote' + (m !== 1 ? 's' : '');
+      document.getElementById('ronaldoCount').textContent = r + ' vote' + (r !== 1 ? 's' : '');
+      if (total > 0) {
+        document.getElementById('messiBar').style.width = ((m / total) * 100) + '%';
+        document.getElementById('ronaldoBar').style.width = ((r / total) * 100) + '%';
+      } else {
+        document.getElementById('messiBar').style.width = '50%';
+        document.getElementById('ronaldoBar').style.width = '50%';
+      }
+    }
+
+    async function loadMyVote() {
+      try {
+        const res = await fetch('/api/vote/mine');
+        if (res.ok) {
+          const data = await res.json();
+          if (data.vote) {
+            document.getElementById('voteStatus').textContent = 'You voted for ' + data.vote.charAt(0).toUpperCase() + data.vote.slice(1);
+          }
+        }
+      } catch (err) {}
+    }
+
+    // --- Init auth on page load ---
+    (async function initAuth() {
+      try {
+        const res = await fetch('/api/auth/me');
+        if (res.ok) {
+          const data = await res.json();
+          currentUser = data.user;
+        }
+      } catch (err) {}
+      onAuthChange();
+    })();
+
     const hero = document.getElementById('hero');
     const carousel = document.getElementById('carousel');
     const gridCanvas = document.getElementById('gridCanvas');
@@ -2328,8 +2867,8 @@
       circle.style.strokeDashoffset = offset;
     });
 
-    document.querySelector(".vote-messi")?.addEventListener("click", () => { console.log("Vote Messi"); });
-    document.querySelector(".vote-ronaldo")?.addEventListener("click", () => { console.log("Vote Ronaldo"); });
+    document.getElementById("voteMessi")?.addEventListener("click", () => castVote("messi"));
+    document.getElementById("voteRonaldo")?.addEventListener("click", () => castVote("ronaldo"));
 
     requestAnimationFrame(animate);
   </script>
