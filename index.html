@@ -1313,6 +1313,229 @@
       color: #666;
     }
     .comment-login-prompt a { color: #111; font-weight: 600; }
+
+    /* ── Particle Canvas ── */
+    #particleCanvas {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 9998;
+    }
+
+    /* ── Film Grain Overlay ── */
+    .film-grain {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 9997;
+      opacity: 0.04;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-size: 128px 128px;
+      animation: grainShift 0.3s steps(3) infinite;
+    }
+    @keyframes grainShift {
+      0% { transform: translate(0, 0); }
+      33% { transform: translate(-2px, 1px); }
+      66% { transform: translate(1px, -2px); }
+      100% { transform: translate(0, 0); }
+    }
+
+    /* ── Scroll-triggered section reveals ── */
+    [data-reveal] {
+      opacity: 0;
+      transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    [data-reveal="fade-up"] { transform: translateY(40px); }
+    [data-reveal="slide-left"] { transform: translateX(-60px); }
+    [data-reveal="slide-right"] { transform: translateX(60px); }
+    [data-reveal="scale-up"] { transform: scale(0.92); }
+    [data-reveal].revealed {
+      opacity: 1;
+      transform: translateY(0) translateX(0) scale(1);
+    }
+
+    /* ── Typewriter cursor ── */
+    .bio-title.typing::after {
+      content: '|';
+      display: inline-block;
+      animation: blinkCursor 0.6s step-end infinite;
+      margin-left: 2px;
+      font-weight: 300;
+    }
+    @keyframes blinkCursor {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+
+    /* ── Stats spotlight sweep ── */
+    .stats-comparison { position: relative; overflow: hidden; }
+    .stats-comparison::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.12) 48%, rgba(255,255,255,0.2) 50%, rgba(255,255,255,0.12) 52%, transparent 60%);
+      transform: translateX(-120%);
+      z-index: 5;
+      pointer-events: none;
+      transition: none;
+    }
+    .stats-comparison.stats-sweep::before {
+      animation: sweepLight 1s ease-out forwards;
+    }
+    @keyframes sweepLight {
+      0% { transform: translateX(-120%); }
+      100% { transform: translateX(120%); }
+    }
+
+    /* ── 3D Holographic Trading Cards ── */
+    .trading-cards-section {
+      padding: 80px 40px;
+      text-align: center;
+      background: #fafaf8;
+    }
+    .trading-cards-title {
+      font-family: "Playfair Display", serif;
+      font-size: 36px;
+      font-weight: 700;
+      color: #111;
+      margin-bottom: 48px;
+    }
+    .trading-cards-grid {
+      display: flex;
+      justify-content: center;
+      gap: 48px;
+      flex-wrap: wrap;
+    }
+    .holo-card {
+      perspective: 1000px;
+      width: 280px;
+      height: 400px;
+      cursor: pointer;
+    }
+    .holo-card-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transform-style: preserve-3d;
+      transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .holo-card.flipped .holo-card-inner {
+      transform: rotateY(180deg);
+    }
+    .holo-card-front, .holo-card-back {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: 20px;
+      backface-visibility: hidden;
+      overflow: hidden;
+    }
+    .holo-card-front {
+      background: linear-gradient(135deg, #1a1a2e, #16213e);
+      border: 1px solid rgba(255,255,255,0.1);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .holo-shimmer {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.15) 45%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0.15) 55%, transparent 60%);
+      background-size: 250% 250%;
+      background-position: var(--shimmer-x, 0%) var(--shimmer-y, 0%);
+      z-index: 2;
+      pointer-events: none;
+      border-radius: 20px;
+    }
+    .holo-rainbow {
+      position: absolute;
+      inset: 0;
+      background: conic-gradient(from 0deg, #ff000033, #ff880033, #ffff0033, #00ff0033, #0088ff33, #8800ff33, #ff000033);
+      mix-blend-mode: color-dodge;
+      opacity: 0;
+      transition: opacity 0.3s;
+      z-index: 3;
+      pointer-events: none;
+      border-radius: 20px;
+    }
+    .holo-card:hover .holo-rainbow { opacity: 0.5; }
+    .holo-card-front img {
+      width: 100%;
+      height: 260px;
+      object-fit: cover;
+      object-position: top;
+      border-radius: 20px 20px 0 0;
+    }
+    .holo-card-info {
+      padding: 16px;
+      text-align: center;
+      z-index: 4;
+    }
+    .holo-card-info h3 {
+      font-family: "Playfair Display", serif;
+      color: #fff;
+      font-size: 20px;
+      margin: 0 0 4px;
+    }
+    .holo-card-info p {
+      font-family: "Playfair Display", serif;
+      color: rgba(255,255,255,0.6);
+      font-size: 13px;
+      margin: 0;
+    }
+    .holo-card-back {
+      background: linear-gradient(135deg, #16213e, #0f3460);
+      border: 1px solid rgba(255,255,255,0.1);
+      transform: rotateY(180deg);
+      display: flex;
+      flex-direction: column;
+      padding: 24px 20px;
+    }
+    .holo-card-back h3 {
+      font-family: "Playfair Display", serif;
+      color: #fff;
+      font-size: 20px;
+      margin: 0 0 20px;
+      text-align: center;
+    }
+    .holo-stats { display: flex; flex-direction: column; gap: 10px; flex: 1; }
+    .holo-stat-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .holo-stat-label {
+      font-family: "Playfair Display", serif;
+      color: rgba(255,255,255,0.7);
+      font-size: 11px;
+      width: 70px;
+      text-align: right;
+      flex-shrink: 0;
+    }
+    .holo-stat-bar-bg {
+      flex: 1;
+      height: 8px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .holo-stat-bar {
+      height: 100%;
+      border-radius: 4px;
+      background: linear-gradient(90deg, #667eea, #764ba2);
+      transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+      width: 0%;
+    }
+    .holo-stat-value {
+      font-family: "Playfair Display", serif;
+      color: #fff;
+      font-size: 12px;
+      width: 30px;
+      text-align: left;
+      flex-shrink: 0;
+    }
   </style>
   <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
@@ -1401,7 +1624,7 @@
     </div>
   </div>
 
-  <section id="duo-comparison" class="duo-comparison hidden">
+  <section id="duo-comparison" class="duo-comparison hidden" data-reveal="fade-up">
     <div class="duo-stage">
       <div class="duo-ronaldo">
         <img src="assets/Cristiano.png" alt="Cristiano Ronaldo" />
@@ -1433,7 +1656,7 @@
     </div>
   </section>
 
-  <section class="messi-biography">
+  <section class="messi-biography" data-reveal="slide-left">
     <div class="messi-bio-wrapper">
       <div class="messi-bio-page active" id="messiPage1">
         <div class="messi-biography-container">
@@ -1506,7 +1729,7 @@
     </div>
   </section>
 
-  <section class="ronaldo-biography messi-biography">
+  <section class="ronaldo-biography messi-biography" data-reveal="slide-right">
     <div class="ronaldo-bio-wrapper">
       <div class="ronaldo-bio-page active" id="ronaldoPage1">
         <div class="messi-biography-container">
@@ -1579,7 +1802,7 @@
     </div>
   </section>
 
-  <section id="stats-comparison" class="stats-comparison">
+  <section id="stats-comparison" class="stats-comparison" data-reveal="scale-up">
     <div class="stats-comparison-inner">
       <div class="stats-img-wrap stats-img-left">
         <img src="assets/Messi stats png.PNG" alt="Lionel Messi">
@@ -1649,7 +1872,7 @@
     </div>
   </section>
 
-  <section class="vote-arena">
+  <section class="vote-arena" data-reveal="fade-up">
     <h2 class="vote-title">Who Defines This Era?</h2>
     <div class="vote-grid">
       <div class="vote-player">
@@ -1742,7 +1965,7 @@
   </section>
 
   <!-- Live Comment Wall -->
-  <section class="comment-wall" id="comment-wall">
+  <section class="comment-wall" id="comment-wall" data-reveal="fade-up">
     <h2 class="comment-wall-title">Fan Voices</h2>
     <div class="comment-ticker-wrap">
       <div class="comment-ticker" id="commentTicker"></div>
@@ -1756,6 +1979,12 @@
         <a href="#" onclick="openAuthModal(); return false;">Login</a> to join the conversation
       </p>
     </div>
+  </section>
+
+  <!-- 3D Holographic Trading Cards -->
+  <section class="trading-cards-section" id="trading-cards" data-reveal="fade-up">
+    <h2 class="trading-cards-title">Player Collection</h2>
+    <div class="trading-cards-grid" id="tradingCardsGrid"></div>
   </section>
 
   <section class="legacy-footer">
@@ -1779,6 +2008,12 @@
       <p>Football Legends Archive — Editorial Project</p>
     </div>
   </section>
+
+  <!-- Particle Canvas -->
+  <canvas id="particleCanvas"></canvas>
+
+  <!-- Film Grain Overlay -->
+  <div class="film-grain"></div>
 
   <!-- Spotlight ring + cursor dot -->
   <div class="spotlight-ring" id="spotlightRing"></div>
@@ -2120,12 +2355,15 @@
       renderTimeline(data);
       renderVoteSection(data);
       renderCommentWall(data);
+      renderTradingCards(data);
+      setTimeout(captureBioTitles, 100);
     }
 
     function renderDuoComparison(data) {
       const section = document.getElementById('duo-comparison');
       if (!section) return;
       section.classList.remove('hidden');
+      setTimeout(() => section.classList.add('revealed'), 50);
 
       const p1 = data.comparison.player1;
       const p2 = data.comparison.player2;
@@ -2193,6 +2431,14 @@
       const statsContent = document.querySelector('.stats-content');
       if (!statsContent) return;
 
+      // Re-trigger stats sweep on duo change
+      const statsSection = document.getElementById('stats-comparison');
+      if (statsSection) {
+        statsSection.classList.remove('stats-sweep');
+        void statsSection.offsetWidth; // force reflow
+        statsSection.classList.add('stats-sweep');
+      }
+
       // Align images for non-Messi X Cristiano duos
       const statsInner = document.querySelector('.stats-comparison-inner');
       if (statsInner) {
@@ -2227,6 +2473,7 @@
       if (!section) return;
       if (data.hasTimeline) {
         section.classList.remove('hidden');
+        setTimeout(() => section.classList.add('revealed'), 50);
       } else {
         section.classList.add('hidden');
       }
@@ -3254,18 +3501,18 @@
       circle.style.strokeDashoffset = offset;
     });
 
-    document.getElementById("voteMessi")?.addEventListener("click", () => {
+    document.getElementById("voteMessi")?.addEventListener("click", function() {
       if (!currentUser) { openAuthModal(); return; }
       if (!currentDuoData) return;
-      castDuoVote(currentDuoSlug, currentDuoData.player1.id);
+      castDuoVote(currentDuoSlug, currentDuoData.player1.id, this);
     });
-    document.getElementById("voteRonaldo")?.addEventListener("click", () => {
+    document.getElementById("voteRonaldo")?.addEventListener("click", function() {
       if (!currentUser) { openAuthModal(); return; }
       if (!currentDuoData) return;
-      castDuoVote(currentDuoSlug, currentDuoData.player2.id);
+      castDuoVote(currentDuoSlug, currentDuoData.player2.id, this);
     });
 
-    async function castDuoVote(slug, playerId) {
+    async function castDuoVote(slug, playerId, btnEl) {
       try {
         const res = await fetch('/api/duos/' + slug + '/vote', {
           method: 'POST',
@@ -3285,7 +3532,226 @@
           document.getElementById('voteStatus').textContent = 'You voted for ' + name + '!';
         }
         loadDuoVoteCounts(slug);
+        // Particle explosion on successful vote
+        if (btnEl) {
+          const rect = btnEl.getBoundingClientRect();
+          const isPlayer1 = currentDuoData && playerId === currentDuoData.player1.id;
+          const color = isPlayer1 ? '#d4af37' : '#50c878';
+          explodeParticles(rect.left + rect.width / 2, rect.top + rect.height / 2, color);
+        }
       } catch (err) { console.error('Vote error:', err); }
+    }
+
+    /* ── Vote Particle Explosion ── */
+    const particleCanvas = document.getElementById('particleCanvas');
+    const pCtx = particleCanvas.getContext('2d');
+    let particles = [];
+
+    function resizeParticleCanvas() {
+      particleCanvas.width = window.innerWidth;
+      particleCanvas.height = window.innerHeight;
+    }
+    resizeParticleCanvas();
+    window.addEventListener('resize', resizeParticleCanvas);
+
+    function explodeParticles(x, y, baseColor) {
+      const count = 80 + Math.floor(Math.random() * 40);
+      for (let i = 0; i < count; i++) {
+        const angle = Math.random() * Math.PI * 2;
+        const speed = 2 + Math.random() * 6;
+        const size = 3 + Math.random() * 5;
+        const hueShift = -30 + Math.random() * 60;
+        particles.push({
+          x, y,
+          vx: Math.cos(angle) * speed,
+          vy: Math.sin(angle) * speed - 2,
+          size,
+          color: shiftHue(baseColor, hueShift),
+          alpha: 1,
+          rotation: Math.random() * 360,
+          rotSpeed: -5 + Math.random() * 10,
+          gravity: 0.12,
+          decay: 0.012 + Math.random() * 0.008,
+          shape: Math.random() > 0.5 ? 'rect' : 'circle'
+        });
+      }
+    }
+
+    function shiftHue(hex, shift) {
+      let r = parseInt(hex.slice(1,3),16), g = parseInt(hex.slice(3,5),16), b = parseInt(hex.slice(5,7),16);
+      r = Math.min(255, Math.max(0, r + shift));
+      g = Math.min(255, Math.max(0, g + shift * 0.5));
+      b = Math.min(255, Math.max(0, b - shift * 0.3));
+      return `rgb(${Math.round(r)},${Math.round(g)},${Math.round(b)})`;
+    }
+
+    function animateParticles() {
+      pCtx.clearRect(0, 0, particleCanvas.width, particleCanvas.height);
+      for (let i = particles.length - 1; i >= 0; i--) {
+        const p = particles[i];
+        p.x += p.vx;
+        p.vy += p.gravity;
+        p.y += p.vy;
+        p.alpha -= p.decay;
+        p.rotation += p.rotSpeed;
+        if (p.alpha <= 0) { particles.splice(i, 1); continue; }
+        pCtx.save();
+        pCtx.globalAlpha = p.alpha;
+        pCtx.translate(p.x, p.y);
+        pCtx.rotate(p.rotation * Math.PI / 180);
+        pCtx.fillStyle = p.color;
+        if (p.shape === 'rect') {
+          pCtx.fillRect(-p.size/2, -p.size/2, p.size, p.size * 0.6);
+        } else {
+          pCtx.beginPath();
+          pCtx.arc(0, 0, p.size/2, 0, Math.PI * 2);
+          pCtx.fill();
+        }
+        pCtx.restore();
+      }
+      requestAnimationFrame(animateParticles);
+    }
+    animateParticles();
+
+    /* ── Scroll-triggered section reveals ── */
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('revealed');
+          // Stats spotlight sweep
+          if (entry.target.classList.contains('stats-comparison')) {
+            entry.target.classList.add('stats-sweep');
+          }
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12 });
+
+    document.querySelectorAll('[data-reveal]').forEach(el => revealObserver.observe(el));
+
+    /* ── Typewriter effect on biography titles ── */
+    function typewriterEffect(el, text, speed) {
+      el.textContent = '';
+      el.classList.add('typing');
+      let i = 0;
+      const interval = setInterval(() => {
+        if (i < text.length) {
+          el.textContent += text[i];
+          i++;
+        } else {
+          clearInterval(interval);
+          el.classList.remove('typing');
+        }
+      }, speed || 40);
+    }
+
+    // Observe bio page changes and trigger typewriter on active page titles
+    const bioObserverConfig = { attributes: true, attributeFilter: ['class'] };
+    function setupBioTypewriter(selector) {
+      document.querySelectorAll(selector).forEach(page => {
+        new MutationObserver((mutations) => {
+          mutations.forEach(m => {
+            if (m.target.classList.contains('active')) {
+              const title = m.target.querySelector('.bio-title, h2');
+              if (title && title.dataset.fullText) {
+                typewriterEffect(title, title.dataset.fullText);
+              }
+            }
+          });
+        }).observe(page, bioObserverConfig);
+      });
+    }
+
+    // Store original title text for typewriter — called after renderBiographies
+    function captureBioTitles() {
+      document.querySelectorAll('.messi-bio-page h2, .ronaldo-bio-page h2').forEach(h2 => {
+        if (!h2.dataset.fullText) h2.dataset.fullText = h2.textContent;
+      });
+      setupBioTypewriter('.messi-bio-page');
+      setupBioTypewriter('.ronaldo-bio-page');
+    }
+
+    /* ── 3D Holographic Trading Cards ── */
+    function renderTradingCards(data) {
+      const grid = document.getElementById('tradingCardsGrid');
+      if (!grid || !data) return;
+      grid.innerHTML = '';
+      [data.player1, data.player2].forEach(player => {
+        const stats = player.stats || [];
+        const card = document.createElement('div');
+        card.className = 'holo-card';
+        card.innerHTML = `
+          <div class="holo-card-inner">
+            <div class="holo-card-front">
+              <div class="holo-shimmer"></div>
+              <div class="holo-rainbow"></div>
+              <img src="assets/${player.image}" alt="${player.fullName}">
+              <div class="holo-card-info">
+                <h3>${player.fullName}</h3>
+                <p>${player.position || ''} · ${player.nationality || ''}</p>
+              </div>
+            </div>
+            <div class="holo-card-back">
+              <h3>${player.fullName}</h3>
+              <div class="holo-stats">
+                ${stats.slice(0, 8).map(s => {
+                  const val = s.left || s.right || s.value || 0;
+                  const maxVals = { 'GOALS': 900, 'ASSISTS': 400, 'TOTAL TROPHIES': 50, "BALLON D'OR": 8, 'EUROPEAN GOLDEN BOOTS': 6, 'CHAMPIONS LEAGUE TITLES': 6, 'INTERNATIONAL GOALS': 140, 'WORLD CUPS': 2, 'CLEAN SHEETS': 350, 'SAVES': 1000, 'TACKLES WON': 1500, 'AERIAL DUELS WON': 2500, 'INTERCEPTIONS': 1200, 'DRIBBLES': 3500, 'KEY PASSES': 1200 };
+                  const max = maxVals[s.label] || Math.max(val, 1);
+                  const pct = Math.min(100, (val / max) * 100);
+                  return `<div class="holo-stat-row">
+                    <span class="holo-stat-label">${s.label}</span>
+                    <div class="holo-stat-bar-bg"><div class="holo-stat-bar" data-width="${pct.toFixed(0)}"></div></div>
+                    <span class="holo-stat-value">${val}</span>
+                  </div>`;
+                }).join('')}
+              </div>
+            </div>
+          </div>
+        `;
+
+        card.addEventListener('mousemove', (e) => tiltCard(e, card));
+        card.addEventListener('mouseleave', () => resetCard(card));
+        card.addEventListener('click', () => {
+          card.classList.toggle('flipped');
+          // Animate stat bars on flip
+          if (card.classList.contains('flipped')) {
+            setTimeout(() => {
+              card.querySelectorAll('.holo-stat-bar').forEach(bar => {
+                bar.style.width = bar.dataset.width + '%';
+              });
+            }, 300);
+          } else {
+            card.querySelectorAll('.holo-stat-bar').forEach(bar => {
+              bar.style.width = '0%';
+            });
+          }
+        });
+        grid.appendChild(card);
+      });
+    }
+
+    function tiltCard(e, card) {
+      const inner = card.querySelector('.holo-card-inner');
+      const rect = card.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      const centerX = rect.width / 2;
+      const centerY = rect.height / 2;
+      const rotateY = ((x - centerX) / centerX) * 15;
+      const rotateX = ((centerY - y) / centerY) * 15;
+      const isFlipped = card.classList.contains('flipped');
+      inner.style.transform = `rotateX(${rotateX}deg) rotateY(${isFlipped ? 180 + rotateY : rotateY}deg)`;
+      // Move shimmer
+      const shimmerX = (x / rect.width) * 100;
+      const shimmerY = (y / rect.height) * 100;
+      card.querySelector('.holo-shimmer').style.backgroundPosition = `${shimmerX}% ${shimmerY}%`;
+    }
+
+    function resetCard(card) {
+      const inner = card.querySelector('.holo-card-inner');
+      const isFlipped = card.classList.contains('flipped');
+      inner.style.transform = isFlipped ? 'rotateY(180deg)' : '';
     }
 
     requestAnimationFrame(animate);
