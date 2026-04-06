@@ -1192,6 +1192,105 @@
       color: #666;
       min-height: 20px;
     }
+
+    /* --- Comment Wall --- */
+    .comment-wall {
+      width: 100%;
+      padding: 60px 40px;
+      text-align: center;
+    }
+    .comment-wall-title {
+      font-family: "Playfair Display", serif;
+      font-size: 36px;
+      font-weight: 700;
+      margin-bottom: 28px;
+    }
+    .comment-ticker-wrap {
+      width: 100%;
+      overflow-x: auto;
+      overflow-y: hidden;
+      -webkit-overflow-scrolling: touch;
+      padding: 10px 0 16px;
+      scrollbar-width: thin;
+    }
+    .comment-ticker {
+      display: flex;
+      gap: 16px;
+      min-height: 80px;
+      padding: 0 20px;
+    }
+    .comment-card {
+      flex-shrink: 0;
+      background: rgba(255,255,255,0.6);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.5);
+      border-radius: 16px;
+      padding: 16px 20px;
+      min-width: 240px;
+      max-width: 320px;
+      text-align: left;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .comment-user {
+      font-family: "Playfair Display", serif;
+      font-weight: 700;
+      font-size: 14px;
+      color: #111;
+    }
+    .comment-text {
+      font-family: "Playfair Display", serif;
+      font-size: 14px;
+      color: #333;
+      line-height: 1.4;
+    }
+    .comment-time {
+      font-size: 12px;
+      color: #999;
+    }
+    .comment-form-wrap {
+      margin-top: 24px;
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    #commentForm {
+      display: flex;
+      gap: 10px;
+      width: 100%;
+      max-width: 500px;
+    }
+    #commentInput {
+      flex: 1;
+      padding: 12px 16px;
+      border: 1.5px solid #ddd;
+      border-radius: 40px;
+      font-family: "Playfair Display", serif;
+      font-size: 14px;
+      background: rgba(255,255,255,0.7);
+    }
+    #commentInput:focus { outline: none; border-color: #111; }
+    #commentForm button {
+      padding: 12px 28px;
+      border-radius: 40px;
+      border: none;
+      background: #111;
+      color: white;
+      font-family: "Playfair Display", serif;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .comment-login-prompt {
+      font-family: "Playfair Display", serif;
+      font-size: 14px;
+      color: #666;
+    }
+    .comment-login-prompt a { color: #111; font-weight: 600; }
   </style>
   <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
@@ -1620,6 +1719,23 @@
     </div>
   </section>
 
+  <!-- Live Comment Wall -->
+  <section class="comment-wall" id="comment-wall">
+    <h2 class="comment-wall-title">Fan Voices</h2>
+    <div class="comment-ticker-wrap">
+      <div class="comment-ticker" id="commentTicker"></div>
+    </div>
+    <div class="comment-form-wrap">
+      <form id="commentForm" onsubmit="event.preventDefault(); postComment();" style="display:none">
+        <input type="text" id="commentInput" maxlength="280" placeholder="Share your thoughts...">
+        <button type="submit">Post</button>
+      </form>
+      <p class="comment-login-prompt" id="commentLoginPrompt">
+        <a href="#" onclick="openAuthModal(); return false;">Login</a> to join the conversation
+      </p>
+    </div>
+  </section>
+
   <section class="legacy-footer">
     <div class="legacy-inner">
       <div class="legacy-title">
@@ -1854,20 +1970,27 @@
       const logoutBtn = document.getElementById('navLogoutBtn');
       const voteStatus = document.getElementById('voteStatus');
 
+      const commentForm = document.getElementById('commentForm');
+      const commentPrompt = document.getElementById('commentLoginPrompt');
+
       if (currentUser) {
         loginBtn.classList.add('hidden');
         userName.classList.remove('hidden');
         logoutBtn.classList.remove('hidden');
         userName.textContent = currentUser.firstName;
-        loadMyVote();
+        if (commentForm) commentForm.style.display = '';
+        if (commentPrompt) commentPrompt.style.display = 'none';
+        if (currentDuoSlug) loadDuoMyVote(currentDuoSlug);
       } else {
         loginBtn.classList.remove('hidden');
         userName.classList.add('hidden');
         logoutBtn.classList.add('hidden');
         userName.textContent = '';
         voteStatus.textContent = '';
+        if (commentForm) commentForm.style.display = 'none';
+        if (commentPrompt) commentPrompt.style.display = '';
       }
-      loadVoteCounts();
+      if (currentDuoSlug) loadDuoVoteCounts(currentDuoSlug);
     }
 
     // --- Voting ---
@@ -1944,6 +2067,282 @@
       } catch (err) {}
       onAuthChange();
     })();
+
+    // ===== DUO DYNAMIC LOADING SYSTEM =====
+    const duoSlugs = ['messi-x-cristiano', 'courtois-x-neuer', 'van-dijk-x-ramos', 'neymar-x-hazard', 'mbappe-x-haaland'];
+    let currentDuoData = null;
+    let currentDuoSlug = null;
+    const duoCache = new Map();
+    let commentPollTimer = null;
+    let lastCommentId = 0;
+
+    async function loadDuo(slug) {
+      if (slug === currentDuoSlug) return;
+      currentDuoSlug = slug;
+
+      let data;
+      if (duoCache.has(slug)) {
+        data = duoCache.get(slug);
+      } else {
+        try {
+          const res = await fetch('/api/duos/' + slug);
+          data = await res.json();
+          duoCache.set(slug, data);
+        } catch (err) { console.error('Failed to load duo:', err); return; }
+      }
+      currentDuoData = data;
+
+      renderDuoComparison(data);
+      renderBiographies(data);
+      renderStats(data);
+      renderTimeline(data);
+      renderVoteSection(data);
+      renderCommentWall(data);
+    }
+
+    function renderDuoComparison(data) {
+      const section = document.getElementById('duo-comparison');
+      if (!section) return;
+      section.classList.remove('hidden');
+
+      const p1 = data.comparison.player1;
+      const p2 = data.comparison.player2;
+
+      // Update images
+      const messiImg = section.querySelector('.duo-messi img');
+      const ronaldoImg = section.querySelector('.duo-ronaldo img');
+      if (messiImg) { messiImg.src = 'assets/' + data.player1.image; messiImg.alt = data.player1.fullName; }
+      if (ronaldoImg) { ronaldoImg.src = 'assets/' + data.player2.image; ronaldoImg.alt = data.player2.fullName; }
+
+      // Update text
+      const messiText = document.getElementById('duoMessiText');
+      const ronaldoText = document.getElementById('duoRonaldoText');
+      if (messiText) {
+        messiText.innerHTML = '<div class="editorial-block"><span class="editorial-number">' + p1.number + '</span><h2 class="editorial-name">' + p1.name + '</h2><span class="editorial-meta">Peak Years: ' + p1.peakYears + '</span><p class="editorial-body">' + p1.body + '</p></div>';
+      }
+      if (ronaldoText) {
+        ronaldoText.innerHTML = '<div class="editorial-block"><span class="editorial-number">' + p2.number + '</span><h2 class="editorial-name">' + p2.name + '</h2><span class="editorial-meta">Peak Years: ' + p2.peakYears + '</span><p class="editorial-body">' + p2.body + '</p></div>';
+      }
+    }
+
+    function renderBiographies(data) {
+      // Player 1 bio
+      const messiWrapper = document.querySelector('.messi-bio-wrapper');
+      if (messiWrapper) {
+        const pages = messiWrapper.querySelectorAll('.messi-bio-page');
+        data.player1.bio.forEach((page, i) => {
+          if (pages[i]) {
+            const container = pages[i].querySelector('.messi-biography-container');
+            if (container) {
+              container.innerHTML = '<div class="messi-bio-text"><h2 class="bio-title">' + page.title + '</h2><p>' + page.text + '</p></div><div class="messi-bio-image"><img src="' + page.image + '" alt="' + page.title + '"></div>';
+            }
+            pages[i].classList.toggle('active', i === 0);
+          }
+        });
+        const prevBtn = document.getElementById('bioPrevBtn');
+        const nextBtn = document.getElementById('bioNextBtn');
+        if (prevBtn) prevBtn.style.display = 'none';
+        if (nextBtn) nextBtn.style.display = '';
+        window._messiBioPage = 1;
+      }
+
+      // Player 2 bio
+      const ronaldoWrapper = document.querySelector('.ronaldo-bio-wrapper');
+      if (ronaldoWrapper) {
+        const pages = ronaldoWrapper.querySelectorAll('.ronaldo-bio-page');
+        data.player2.bio.forEach((page, i) => {
+          if (pages[i]) {
+            const container = pages[i].querySelector('.messi-biography-container');
+            if (container) {
+              container.innerHTML = '<div class="messi-bio-image"><img src="' + page.image + '" alt="' + page.title + '"></div><div class="messi-bio-text"><h2 class="bio-title">' + page.title + '</h2><p>' + page.text + '</p></div>';
+            }
+            pages[i].classList.toggle('active', i === 0);
+          }
+        });
+        const prevBtn = document.getElementById('ronaldoPrevBtn');
+        const nextBtn = document.getElementById('ronaldoNextBtn');
+        if (prevBtn) prevBtn.style.display = 'none';
+        if (nextBtn) nextBtn.style.display = '';
+        window._ronaldoBioPage = 1;
+      }
+    }
+
+    function renderStats(data) {
+      const statsContent = document.querySelector('.stats-content');
+      if (!statsContent) return;
+
+      // Update images
+      const leftImg = document.querySelector('.stats-img-left img');
+      const rightImg = document.querySelector('.stats-img-right img');
+      if (leftImg) { leftImg.src = 'assets/' + data.player1.statsImage; leftImg.alt = data.player1.fullName; }
+      if (rightImg) { rightImg.src = 'assets/' + data.player2.statsImage; rightImg.alt = data.player2.fullName; }
+
+      // Rebuild stat rows
+      const s1 = data.player1.stats;
+      const s2 = data.player2.stats;
+      let html = '<h2 class="stats-title">The Numbers Behind the Rivalry</h2>';
+      for (let i = 0; i < s1.length; i++) {
+        html += '<div class="stat-row"><span class="stat-left" data-target="' + s1[i].left + '">0</span><span class="stat-label">' + s1[i].label + '</span><span class="stat-right" data-target="' + (s2[i] ? s2[i].left : 0) + '">0</span></div>';
+      }
+      statsContent.innerHTML = html;
+
+      // Reset and retrigger animation
+      statsAnimated = false;
+    }
+
+    function renderTimeline(data) {
+      const section = document.getElementById('timeline-section');
+      if (!section) return;
+      if (data.hasTimeline) {
+        section.classList.remove('hidden');
+      } else {
+        section.classList.add('hidden');
+      }
+    }
+
+    function renderVoteSection(data) {
+      // Update player images
+      const leftImg = document.querySelector('.vote-arena .vote-player:first-child .player-img');
+      const rightImg = document.querySelector('.vote-arena .vote-player:last-child .player-img');
+      if (leftImg) { leftImg.src = 'assets/' + data.player1.voteImage; leftImg.alt = data.player1.fullName; }
+      if (rightImg) { rightImg.src = 'assets/' + data.player2.voteImage; rightImg.alt = data.player2.fullName; }
+
+      // Update donut charts
+      const leftDonuts = document.querySelector('.vote-arena .vote-player:first-child .donut-row');
+      const rightDonuts = document.querySelector('.vote-arena .vote-player:last-child .donut-row');
+      if (leftDonuts) leftDonuts.innerHTML = buildDonutsHTML(data.player1.donuts);
+      if (rightDonuts) rightDonuts.innerHTML = buildDonutsHTML(data.player2.donuts);
+
+      // Animate donuts
+      document.querySelectorAll('.donut-progress').forEach(circle => {
+        const radius = circle.r.baseVal.value;
+        const circumference = 2 * Math.PI * radius;
+        circle.style.strokeDasharray = circumference;
+        const percent = circle.dataset.percent;
+        const offset = circumference - (percent / 100) * circumference;
+        circle.style.strokeDashoffset = offset;
+      });
+
+      // Update vote buttons
+      const voteBtn1 = document.getElementById('voteMessi');
+      const voteBtn2 = document.getElementById('voteRonaldo');
+      if (voteBtn1) voteBtn1.textContent = 'Vote ' + data.player1.fullName.split(' ')[0];
+      if (voteBtn2) voteBtn2.textContent = 'Vote ' + data.player2.fullName.split(' ')[0];
+
+      // Load vote counts and user's vote for this duo
+      loadDuoVoteCounts(data.slug);
+      if (currentUser) loadDuoMyVote(data.slug);
+      else document.getElementById('voteStatus').textContent = '';
+    }
+
+    function buildDonutsHTML(donuts) {
+      return donuts.map(d => '<div class="donut-chart"><div class="donut-circle-wrap"><svg width="90" height="90" viewBox="0 0 90 90"><circle class="donut-bg" cx="45" cy="45" r="36"></circle><circle class="donut-progress" cx="45" cy="45" r="36" data-percent="' + d.percent + '"></circle></svg><span class="donut-text">' + d.percent + '%</span></div><p class="donut-label">' + d.label + '</p></div>').join('');
+    }
+
+    async function loadDuoVoteCounts(slug) {
+      try {
+        const res = await fetch('/api/duos/' + slug + '/vote/counts');
+        const counts = await res.json();
+        const m = counts.player1Count || 0;
+        const r = counts.player2Count || 0;
+        const total = m + r;
+        document.getElementById('messiCount').textContent = m + ' vote' + (m !== 1 ? 's' : '');
+        document.getElementById('ronaldoCount').textContent = r + ' vote' + (r !== 1 ? 's' : '');
+        if (total > 0) {
+          document.getElementById('messiBar').style.width = ((m / total) * 100) + '%';
+          document.getElementById('ronaldoBar').style.width = ((r / total) * 100) + '%';
+        } else {
+          document.getElementById('messiBar').style.width = '50%';
+          document.getElementById('ronaldoBar').style.width = '50%';
+        }
+      } catch (err) {}
+    }
+
+    async function loadDuoMyVote(slug) {
+      try {
+        const res = await fetch('/api/duos/' + slug + '/vote/mine');
+        if (res.ok) {
+          const data = await res.json();
+          if (data.playerId && currentDuoData) {
+            const name = data.playerId === currentDuoData.player1.id ? currentDuoData.player1.fullName : currentDuoData.player2.fullName;
+            document.getElementById('voteStatus').textContent = 'You voted for ' + name;
+          } else {
+            document.getElementById('voteStatus').textContent = '';
+          }
+        }
+      } catch (err) {}
+    }
+
+    // Comment wall
+    async function renderCommentWall(data) {
+      if (commentPollTimer) { clearInterval(commentPollTimer); commentPollTimer = null; }
+      lastCommentId = 0;
+      const ticker = document.getElementById('commentTicker');
+      const form = document.getElementById('commentForm');
+      const loginPrompt = document.getElementById('commentLoginPrompt');
+      if (!ticker) return;
+
+      ticker.innerHTML = '';
+      if (form) form.style.display = currentUser ? '' : 'none';
+      if (loginPrompt) loginPrompt.style.display = currentUser ? 'none' : '';
+
+      try {
+        const res = await fetch('/api/duos/' + data.slug + '/comments');
+        const comments = await res.json();
+        comments.reverse().forEach(c => appendComment(c));
+        if (comments.length > 0) lastCommentId = Math.max(...comments.map(c => c.id));
+      } catch (err) {}
+
+      commentPollTimer = setInterval(() => pollComments(data.slug), 7000);
+    }
+
+    async function pollComments(slug) {
+      if (slug !== currentDuoSlug) return;
+      try {
+        const res = await fetch('/api/duos/' + slug + '/comments?since=' + lastCommentId);
+        const comments = await res.json();
+        comments.reverse().forEach(c => appendComment(c));
+        if (comments.length > 0) lastCommentId = Math.max(...comments.map(c => c.id));
+      } catch (err) {}
+    }
+
+    function appendComment(c) {
+      const ticker = document.getElementById('commentTicker');
+      if (!ticker) return;
+      const card = document.createElement('div');
+      card.className = 'comment-card';
+      const ago = timeAgo(c.createdAt);
+      card.innerHTML = '<span class="comment-user">' + c.userName + '</span><span class="comment-text">' + c.content + '</span><span class="comment-time">' + ago + '</span>';
+      ticker.appendChild(card);
+      ticker.scrollLeft = ticker.scrollWidth;
+    }
+
+    function timeAgo(dateStr) {
+      const diff = (Date.now() - new Date(dateStr).getTime()) / 1000;
+      if (diff < 60) return 'just now';
+      if (diff < 3600) return Math.floor(diff / 60) + 'm ago';
+      if (diff < 86400) return Math.floor(diff / 3600) + 'h ago';
+      return Math.floor(diff / 86400) + 'd ago';
+    }
+
+    async function postComment() {
+      if (!currentUser || !currentDuoSlug) return;
+      const input = document.getElementById('commentInput');
+      if (!input || !input.value.trim()) return;
+      try {
+        const res = await fetch('/api/duos/' + currentDuoSlug + '/comments', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ content: input.value.trim() })
+        });
+        if (res.ok) {
+          const c = await res.json();
+          appendComment(c);
+          lastCommentId = Math.max(lastCommentId, c.id);
+          input.value = '';
+        }
+      } catch (err) {}
+    }
 
     const hero = document.getElementById('hero');
     const carousel = document.getElementById('carousel');
@@ -2288,20 +2687,9 @@
         dot.classList.toggle('active', i === currentIndex);
       });
 
-      // Show duo-comparison and duo-carousels only when current slide is Messi X Cristiano (index 0)
-      if (duoComparisonSection) {
-        if (currentIndex === 0) {
-          duoComparisonSection.classList.remove('hidden');
-        } else {
-          duoComparisonSection.classList.add('hidden');
-        }
-      }
-      if (duoCarouselsSection) {
-        if (currentIndex === 0) {
-          duoCarouselsSection.classList.remove('hidden');
-        } else {
-          duoCarouselsSection.classList.add('hidden');
-        }
+      // Load duo data for current slide
+      if (duoSlugs[currentIndex]) {
+        loadDuo(duoSlugs[currentIndex]);
       }
     }
 
@@ -2400,80 +2788,41 @@
     }
     buildDuoCarouselTracks();
 
-    (function () {
-      const page1 = document.getElementById("messiPage1");
-      const page2 = document.getElementById("messiPage2");
-      const page3 = document.getElementById("messiPage3");
-      const nextBtn = document.getElementById("bioNextBtn");
-      const prevBtn = document.getElementById("bioPrevBtn");
-      let currentBioPage = 1;
-      if (nextBtn && prevBtn && page1 && page2 && page3) {
-        prevBtn.style.display = "none";
-        nextBtn.addEventListener("click", function () {
-          if (currentBioPage === 1) {
-            page1.classList.remove("active");
-            page2.classList.add("active");
-            currentBioPage = 2;
-            prevBtn.style.display = "";
-          } else if (currentBioPage === 2) {
-            page2.classList.remove("active");
-            page3.classList.add("active");
-            currentBioPage = 3;
-            nextBtn.style.display = "none";
-          }
-        });
-        prevBtn.addEventListener("click", function () {
-          if (currentBioPage === 2) {
-            page2.classList.remove("active");
-            page1.classList.add("active");
-            currentBioPage = 1;
-            prevBtn.style.display = "none";
-          } else if (currentBioPage === 3) {
-            page3.classList.remove("active");
-            page2.classList.add("active");
-            currentBioPage = 2;
-            nextBtn.style.display = "";
-          }
-        });
-      }
-    })();
+    // Bio pagination — uses window._messiBioPage / _ronaldoBioPage set by renderBiographies
+    window._messiBioPage = 1;
+    window._ronaldoBioPage = 1;
 
-    (function () {
-      const rPage1 = document.getElementById("ronaldoPage1");
-      const rPage2 = document.getElementById("ronaldoPage2");
-      const rPage3 = document.getElementById("ronaldoPage3");
-      const rNextBtn = document.getElementById("ronaldoNextBtn");
-      const rPrevBtn = document.getElementById("ronaldoPrevBtn");
-      let rCurrentPage = 1;
-      if (rNextBtn && rPrevBtn && rPage1 && rPage2 && rPage3) {
-        rNextBtn.addEventListener("click", function () {
-          if (rCurrentPage === 1) {
-            rPage1.classList.remove("active");
-            rPage2.classList.add("active");
-            rCurrentPage = 2;
-            rPrevBtn.style.display = "";
-          } else if (rCurrentPage === 2) {
-            rPage2.classList.remove("active");
-            rPage3.classList.add("active");
-            rCurrentPage = 3;
-            rNextBtn.style.display = "none";
-          }
-        });
-        rPrevBtn.addEventListener("click", function () {
-          if (rCurrentPage === 2) {
-            rPage2.classList.remove("active");
-            rPage1.classList.add("active");
-            rCurrentPage = 1;
-            rPrevBtn.style.display = "none";
-          } else if (rCurrentPage === 3) {
-            rPage3.classList.remove("active");
-            rPage2.classList.add("active");
-            rCurrentPage = 2;
-            rNextBtn.style.display = "";
-          }
-        });
-      }
-    })();
+    function navigateBio(wrapper, pageClass, pageVar, delta) {
+      const pages = wrapper.querySelectorAll('.' + pageClass);
+      const cur = window[pageVar];
+      const next = cur + delta;
+      if (next < 1 || next > pages.length) return;
+      pages[cur - 1].classList.remove('active');
+      pages[next - 1].classList.add('active');
+      window[pageVar] = next;
+      // Update button visibility
+      const prevBtn = wrapper.querySelector('.bio-prev-btn');
+      const nextBtn = wrapper.querySelector('.bio-next-btn');
+      if (prevBtn) prevBtn.style.display = next === 1 ? 'none' : '';
+      if (nextBtn) nextBtn.style.display = next === pages.length ? 'none' : '';
+    }
+
+    document.getElementById('bioNextBtn')?.addEventListener('click', () => {
+      const wrapper = document.querySelector('.messi-bio-wrapper');
+      if (wrapper) navigateBio(wrapper, 'messi-bio-page', '_messiBioPage', 1);
+    });
+    document.getElementById('bioPrevBtn')?.addEventListener('click', () => {
+      const wrapper = document.querySelector('.messi-bio-wrapper');
+      if (wrapper) navigateBio(wrapper, 'messi-bio-page', '_messiBioPage', -1);
+    });
+    document.getElementById('ronaldoNextBtn')?.addEventListener('click', () => {
+      const wrapper = document.querySelector('.ronaldo-bio-wrapper');
+      if (wrapper) navigateBio(wrapper, 'ronaldo-bio-page', '_ronaldoBioPage', 1);
+    });
+    document.getElementById('ronaldoPrevBtn')?.addEventListener('click', () => {
+      const wrapper = document.querySelector('.ronaldo-bio-wrapper');
+      if (wrapper) navigateBio(wrapper, 'ronaldo-bio-page', '_ronaldoBioPage', -1);
+    });
 
     // Duo comparison slider (only when section is visible; drag on divider only)
     let duoSliderPercent = 50;
@@ -2826,7 +3175,7 @@
     }
 
     const statsSection = document.querySelector('.stats-comparison');
-    let statsAnimated = false;
+    var statsAnimated = false;
     const statsObserver = new IntersectionObserver(entries => {
       entries.forEach(entry => {
         if (entry.isIntersecting && !statsAnimated) {
@@ -2873,8 +3222,39 @@
       circle.style.strokeDashoffset = offset;
     });
 
-    document.getElementById("voteMessi")?.addEventListener("click", () => castVote("messi"));
-    document.getElementById("voteRonaldo")?.addEventListener("click", () => castVote("ronaldo"));
+    document.getElementById("voteMessi")?.addEventListener("click", () => {
+      if (!currentUser) { openAuthModal(); return; }
+      if (!currentDuoData) return;
+      castDuoVote(currentDuoSlug, currentDuoData.player1.id);
+    });
+    document.getElementById("voteRonaldo")?.addEventListener("click", () => {
+      if (!currentUser) { openAuthModal(); return; }
+      if (!currentDuoData) return;
+      castDuoVote(currentDuoSlug, currentDuoData.player2.id);
+    });
+
+    async function castDuoVote(slug, playerId) {
+      try {
+        const res = await fetch('/api/duos/' + slug + '/vote', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ playerId })
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          if (data.playerId && currentDuoData) {
+            const name = data.playerId === currentDuoData.player1.id ? currentDuoData.player1.fullName : currentDuoData.player2.fullName;
+            document.getElementById('voteStatus').textContent = 'You already voted for ' + name;
+          }
+          return;
+        }
+        if (currentDuoData) {
+          const name = playerId === currentDuoData.player1.id ? currentDuoData.player1.fullName : currentDuoData.player2.fullName;
+          document.getElementById('voteStatus').textContent = 'You voted for ' + name + '!';
+        }
+        loadDuoVoteCounts(slug);
+      } catch (err) { console.error('Vote error:', err); }
+    }
 
     requestAnimationFrame(animate);
   </script>
