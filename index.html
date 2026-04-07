@@ -14,13 +14,11 @@
       --text-muted: #666;
       --border: #111;
       --grid-line: #f7f7f7;
-      --card-bg: rgba(255,255,255,0.12);
       --nav-bg: rgba(255,255,255,0.85);
       --input-bg: #fff;
       --input-border: #ccc;
       --overlay-bg: rgba(0,0,0,0.45);
       --modal-bg: rgba(255,255,255,0.15);
-      --shadow: rgba(0,0,0,0.18);
       transition: background-color 0.4s, color 0.4s;
     }
     body.dark-mode {
@@ -31,13 +29,11 @@
       --text-muted: #999;
       --border: #ffffff;
       --grid-line: #1a1a1a;
-      --card-bg: rgba(255,255,255,0.06);
       --nav-bg: rgba(14,14,14,0.9);
       --input-bg: #1a1a1a;
       --input-border: #333;
       --overlay-bg: rgba(0,0,0,0.7);
       --modal-bg: rgba(30,30,30,0.4);
-      --shadow: rgba(0,0,0,0.5);
     }
 
     *, *::before, *::after {
@@ -175,7 +171,6 @@
       filter: blur(3px);
     }
 
-    /* Animated grid */
     .grid-canvas {
       position: absolute;
       inset: 0;
@@ -183,7 +178,6 @@
       pointer-events: none;
     }
 
-    /* Card faces for 3D flip */
     .card-face {
       position: absolute;
       inset: 0;
@@ -205,7 +199,6 @@
       border-radius: 28px;
     }
 
-    /* Base / reveal layers for dual-image spotlight */
     .layer-base,
     .layer-reveal {
       position: absolute;
@@ -250,8 +243,6 @@
       display: block;
     }
 
-
-    /* Echo trails canvas */
     .echo-canvas {
       position: absolute;
       inset: 0;
@@ -259,7 +250,6 @@
       pointer-events: none;
     }
 
-    /* Spotlight ring visual */
     .spotlight-ring {
       position: fixed;
       width: 200px;
@@ -270,11 +260,9 @@
       z-index: 10;
       transform: translate(-50%, -50%);
       transition: border-color 0.3s ease, opacity 0.3s ease;
-      mix-blend-mode: normal;
       opacity: 0;
     }
 
-    /* Custom cursor dot */
     .cursor-dot {
       position: fixed;
       width: 8px;
@@ -288,7 +276,6 @@
       opacity: 0;
     }
 
-    /* UI overlay */
     .ui-layer {
       position: absolute;
       inset: 0;
@@ -296,7 +283,6 @@
       pointer-events: none;
     }
 
-    /* Name — top left */
     .name {
       position: absolute;
       bottom: 48px;
@@ -318,7 +304,6 @@
       content: '\00a0';
     }
 
-    /* Inverted state when spotlight overlaps */
     .inverted .line {
       color: #fff !important;
     }
@@ -346,7 +331,6 @@
       transform: scale(1.4);
     }
 
-    /* Duo comparison section (Messi X Cristiano only) */
     #duo-comparison.duo-comparison {
       height: 100vh;
       width: 100%;
@@ -469,7 +453,6 @@
       max-width: 420px;
     }
 
-    /* Stats comparison – Messi vs Ronaldo numbers */
     .stats-comparison {
       width: 100%;
       max-width: 100%;
@@ -581,7 +564,6 @@
       text-align: center;
     }
 
-    /* Duo carousels – Netflix-style centered, 4 cards visible, no scroll past end */
     #timeline-section {
       width: 100%;
       padding: 60px 0 40px 0;
@@ -973,7 +955,6 @@
       font-size: 28px;
     }
 
-    /* Legacy footer – cinematic documentary ending */
     .legacy-footer {
       width: 100%;
       padding: 180px 40px 80px;
@@ -1030,7 +1011,6 @@
         gap: 24px;
       }
     }
-    /* --- Auth Modal --- */
     .auth-overlay {
       display: none;
       position: fixed;
@@ -1178,7 +1158,6 @@
       min-height: 18px;
     }
 
-    /* --- Nav auth button --- */
     .nav-spacer { flex: 1; }
     .nav-links {
       display: flex;
@@ -1237,7 +1216,6 @@
     }
     .nav-auth .hidden { display: none; }
 
-    /* --- Vote counts --- */
     .vote-counts-bar {
       width: 100%;
       max-width: 340px;
@@ -1277,7 +1255,6 @@
       min-height: 20px;
     }
 
-    /* --- Comment Wall --- */
     .comment-wall {
       width: 100%;
       padding: 60px 40px;
@@ -1376,7 +1353,6 @@
     }
     .comment-login-prompt a { color: #111; font-weight: 600; }
 
-    /* ── Particle Canvas ── */
     #particleCanvas {
       position: fixed;
       inset: 0;
@@ -1386,7 +1362,6 @@
       z-index: 9998;
     }
 
-    /* ── Film Grain Overlay ── */
     .film-grain {
       position: fixed;
       inset: 0;
@@ -1404,7 +1379,6 @@
       100% { transform: translate(0, 0); }
     }
 
-    /* ── Scroll-triggered section reveals ── */
     [data-reveal] {
       opacity: 0;
       transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
@@ -1418,7 +1392,6 @@
       transform: translateY(0) translateX(0) scale(1);
     }
 
-    /* ── Typewriter cursor ── */
     .bio-title.typing::after {
       content: '|';
       display: inline-block;
@@ -1431,7 +1404,6 @@
       50% { opacity: 0; }
     }
 
-    /* ── Stats spotlight sweep ── */
     .stats-comparison { position: relative; overflow: hidden; }
     .stats-comparison::before {
       content: '';
@@ -1441,7 +1413,6 @@
       transform: translateX(-120%);
       z-index: 5;
       pointer-events: none;
-      transition: none;
     }
     .stats-comparison.stats-sweep::before {
       animation: sweepLight 1s ease-out forwards;
@@ -1451,7 +1422,6 @@
       100% { transform: translateX(120%); }
     }
 
-    /* ── 3D Holographic Trading Cards ── */
     .trading-cards-section {
       padding: 80px 40px;
       text-align: center;
@@ -1599,7 +1569,6 @@
       flex-shrink: 0;
     }
 
-    /* ── Dark Mode Overrides ── */
     body.dark-mode { color: #fff; }
     body.dark-mode h1, body.dark-mode h2, body.dark-mode h3,
     body.dark-mode h4, body.dark-mode p, body.dark-mode span,
@@ -1732,63 +1701,13 @@
     </nav>
   </header>
   <div class="hero" id="hero">
-
-    <!-- Animated background grid -->
     <canvas class="grid-canvas" id="gridCanvas"></canvas>
 
-    <div class="carousel" id="carousel">
-      <div class="slide">
-        <div class="layer-base">
-          <img src="assets/hamilton-face.png" alt="Base portrait" class="imgBase">
-        </div>
-        <div class="layer-reveal">
-          <img src="assets/hamilton-helmet.png" alt="Reveal portrait" class="imgReveal">
-        </div>
-      </div>
-
-      <div class="slide">
-        <div class="layer-base">
-          <img src="assets/hamilton-face.png" alt="Base portrait" class="imgBase">
-        </div>
-        <div class="layer-reveal">
-          <img src="assets/hamilton-helmet.png" alt="Reveal portrait" class="imgReveal">
-        </div>
-      </div>
-
-      <div class="slide">
-        <div class="layer-base">
-          <img src="assets/hamilton-face.png" alt="Base portrait" class="imgBase">
-        </div>
-        <div class="layer-reveal">
-          <img src="assets/hamilton-helmet.png" alt="Reveal portrait" class="imgReveal">
-        </div>
-      </div>
-
-      <div class="slide">
-        <div class="layer-base">
-          <img src="assets/hamilton-face.png" alt="Base portrait" class="imgBase">
-        </div>
-        <div class="layer-reveal">
-          <img src="assets/hamilton-helmet.png" alt="Reveal portrait" class="imgReveal">
-        </div>
-      </div>
-
-      <div class="slide">
-        <div class="layer-base">
-          <img src="assets/hamilton-face.png" alt="Base portrait" class="imgBase">
-        </div>
-        <div class="layer-reveal">
-          <img src="assets/hamilton-helmet.png" alt="Reveal portrait" class="imgReveal">
-        </div>
-      </div>
-    </div>
+    <div class="carousel" id="carousel"></div>
 
     <div class="pagination" id="pagination"></div>
 
-    <!-- Echo trails -->
     <canvas class="echo-canvas" id="echoCanvas"></canvas>
-
-    <!-- UI elements -->
     <div class="ui-layer" id="uiLayer">
       <div class="name" id="nameBlock">
         <span class="line">Messi</span>
@@ -2138,7 +2057,6 @@
     </div>
   </section>
 
-  <!-- Live Comment Wall -->
   <section class="comment-wall" id="comment-wall" data-reveal="fade-up">
     <h2 class="comment-wall-title">Fan Voices</h2>
     <div class="comment-ticker-wrap">
@@ -2155,7 +2073,6 @@
     </div>
   </section>
 
-  <!-- 3D Holographic Trading Cards -->
   <section class="trading-cards-section" id="trading-cards" data-reveal="fade-up">
     <h2 class="trading-cards-title">Player Collection</h2>
     <div class="trading-cards-grid" id="tradingCardsGrid"></div>
@@ -2183,22 +2100,14 @@
     </div>
   </section>
 
-  <!-- Particle Canvas -->
   <canvas id="particleCanvas"></canvas>
-
-  <!-- Film Grain Overlay -->
   <div class="film-grain"></div>
-
-  <!-- Spotlight ring + cursor dot -->
   <div class="spotlight-ring" id="spotlightRing"></div>
   <div class="cursor-dot" id="cursorDot"></div>
 
-  <!-- Auth Modal -->
   <div class="auth-overlay" id="authOverlay" onclick="if(event.target===this)closeAuthModal()">
     <div class="auth-modal">
       <button class="auth-modal-close" onclick="closeAuthModal()">&times;</button>
-
-      <!-- Login View -->
       <div id="loginView">
         <h2>Welcome Back</h2>
         <p class="auth-error" id="loginError"></p>
@@ -2217,8 +2126,6 @@
         <div id="googleBtnLogin" style="display:flex;justify-content:center;"></div>
         <p class="auth-switch">Don't have an account? <a onclick="showSignup()">Sign up</a></p>
       </div>
-
-      <!-- Signup View -->
       <div id="signupView" style="display:none">
         <h2>Create Account</h2>
         <p class="auth-error" id="signupError"></p>
@@ -2267,11 +2174,9 @@
   </div>
 
   <script>
-    // ===== AUTH & VOTING SYSTEM =====
     let GOOGLE_CLIENT_ID = '';
     let currentUser = null;
 
-    // --- Modal control ---
     function openAuthModal() {
       document.getElementById('authOverlay').classList.add('active');
       showLogin();
@@ -2292,7 +2197,6 @@
       document.getElementById('signupError').textContent = '';
     }
 
-    // --- Auth handlers ---
     async function handleSignup(e) {
       e.preventDefault();
       const errEl = document.getElementById('signupError');
@@ -2394,7 +2298,6 @@
       onAuthChange();
     }
 
-    // --- UI state ---
     function onAuthChange() {
       const loginBtn = document.getElementById('navLoginBtn');
       const userName = document.getElementById('navUserName');
@@ -2424,70 +2327,6 @@
       if (currentDuoSlug) loadDuoVoteCounts(currentDuoSlug);
     }
 
-    // --- Voting ---
-    async function castVote(player) {
-      if (!currentUser) {
-        openAuthModal();
-        return;
-      }
-      try {
-        const res = await fetch('/api/vote', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ player })
-        });
-        const data = await res.json();
-        if (!res.ok) {
-          if (data.vote) {
-            document.getElementById('voteStatus').textContent = 'You already voted for ' + data.vote.charAt(0).toUpperCase() + data.vote.slice(1);
-          }
-          return;
-        }
-        document.getElementById('voteStatus').textContent = 'You voted for ' + player.charAt(0).toUpperCase() + player.slice(1) + '!';
-        updateVoteCounts(data.counts);
-      } catch (err) {
-        console.error('Vote error:', err);
-      }
-    }
-
-    async function loadVoteCounts() {
-      try {
-        const res = await fetch('/api/vote/counts');
-        const counts = await res.json();
-        updateVoteCounts(counts);
-      } catch (err) {
-        console.error('Failed to load counts:', err);
-      }
-    }
-
-    function updateVoteCounts(counts) {
-      const m = counts.messi || 0;
-      const r = counts.ronaldo || 0;
-      const total = m + r;
-      document.getElementById('messiCount').textContent = m + ' vote' + (m !== 1 ? 's' : '');
-      document.getElementById('ronaldoCount').textContent = r + ' vote' + (r !== 1 ? 's' : '');
-      if (total > 0) {
-        document.getElementById('messiBar').style.width = ((m / total) * 100) + '%';
-        document.getElementById('ronaldoBar').style.width = ((r / total) * 100) + '%';
-      } else {
-        document.getElementById('messiBar').style.width = '50%';
-        document.getElementById('ronaldoBar').style.width = '50%';
-      }
-    }
-
-    async function loadMyVote() {
-      try {
-        const res = await fetch('/api/vote/mine');
-        if (res.ok) {
-          const data = await res.json();
-          if (data.vote) {
-            document.getElementById('voteStatus').textContent = 'You voted for ' + data.vote.charAt(0).toUpperCase() + data.vote.slice(1);
-          }
-        }
-      } catch (err) {}
-    }
-
-    // --- Init auth on page load ---
     (async function initAuth() {
       try {
         const res = await fetch('/api/auth/me');
@@ -2499,7 +2338,6 @@
       onAuthChange();
     })();
 
-    // ===== DUO DYNAMIC LOADING SYSTEM =====
     const duoSlugs = ['messi-x-cristiano', 'courtois-x-neuer', 'van-dijk-x-ramos', 'neymar-x-hazard', 'mbappe-x-haaland'];
     let currentDuoData = null;
     let currentDuoSlug = null;
@@ -2542,13 +2380,11 @@
       const p1 = data.comparison.player1;
       const p2 = data.comparison.player2;
 
-      // Update images
       const messiImg = section.querySelector('.duo-messi img');
       const ronaldoImg = section.querySelector('.duo-ronaldo img');
       if (messiImg) { messiImg.src = 'assets/' + data.player1.image; messiImg.alt = data.player1.fullName; }
       if (ronaldoImg) { ronaldoImg.src = 'assets/' + data.player2.image; ronaldoImg.alt = data.player2.fullName; }
 
-      // Update text
       const messiText = document.getElementById('duoMessiText');
       const ronaldoText = document.getElementById('duoRonaldoText');
       if (messiText) {
@@ -2560,7 +2396,6 @@
     }
 
     function renderBiographies(data) {
-      // Player 1 bio
       const messiWrapper = document.querySelector('.messi-bio-wrapper');
       if (messiWrapper) {
         const pages = messiWrapper.querySelectorAll('.messi-bio-page');
@@ -2580,7 +2415,6 @@
         window._messiBioPage = 1;
       }
 
-      // Player 2 bio
       const ronaldoWrapper = document.querySelector('.ronaldo-bio-wrapper');
       if (ronaldoWrapper) {
         const pages = ronaldoWrapper.querySelectorAll('.ronaldo-bio-page');
@@ -2605,15 +2439,13 @@
       const statsContent = document.querySelector('.stats-content');
       if (!statsContent) return;
 
-      // Re-trigger stats sweep on duo change
       const statsSection = document.getElementById('stats-comparison');
       if (statsSection) {
         statsSection.classList.remove('stats-sweep');
-        void statsSection.offsetWidth; // force reflow
+        void statsSection.offsetWidth;
         statsSection.classList.add('stats-sweep');
       }
 
-      // Align images for non-Messi X Cristiano duos
       const statsInner = document.querySelector('.stats-comparison-inner');
       if (statsInner) {
         if (data.slug === 'messi-x-cristiano') {
@@ -2623,13 +2455,11 @@
         }
       }
 
-      // Update images
       const leftImg = document.querySelector('.stats-img-left img');
       const rightImg = document.querySelector('.stats-img-right img');
       if (leftImg) { leftImg.src = 'assets/' + data.player1.statsImage; leftImg.alt = data.player1.fullName; }
       if (rightImg) { rightImg.src = 'assets/' + data.player2.statsImage; rightImg.alt = data.player2.fullName; }
 
-      // Rebuild stat rows
       const s1 = data.player1.stats;
       const s2 = data.player2.stats;
       let html = '<h2 class="stats-title">The Numbers Behind the Rivalry</h2>';
@@ -2638,7 +2468,6 @@
       }
       statsContent.innerHTML = html;
 
-      // Reset and retrigger animation
       statsAnimated = false;
     }
 
@@ -2654,19 +2483,16 @@
     }
 
     function renderVoteSection(data) {
-      // Update player images
       const leftImg = document.querySelector('.vote-arena .vote-player:first-child .player-img');
       const rightImg = document.querySelector('.vote-arena .vote-player:last-child .player-img');
       if (leftImg) { leftImg.src = 'assets/' + data.player1.voteImage; leftImg.alt = data.player1.fullName; }
       if (rightImg) { rightImg.src = 'assets/' + data.player2.voteImage; rightImg.alt = data.player2.fullName; }
 
-      // Update donut charts
       const leftDonuts = document.querySelector('.vote-arena .vote-player:first-child .donut-row');
       const rightDonuts = document.querySelector('.vote-arena .vote-player:last-child .donut-row');
       if (leftDonuts) leftDonuts.innerHTML = buildDonutsHTML(data.player1.donuts);
       if (rightDonuts) rightDonuts.innerHTML = buildDonutsHTML(data.player2.donuts);
 
-      // Animate donuts
       document.querySelectorAll('.donut-progress').forEach(circle => {
         const radius = circle.r.baseVal.value;
         const circumference = 2 * Math.PI * radius;
@@ -2676,13 +2502,11 @@
         circle.style.strokeDashoffset = offset;
       });
 
-      // Update vote buttons
       const voteBtn1 = document.getElementById('voteMessi');
       const voteBtn2 = document.getElementById('voteRonaldo');
       if (voteBtn1) voteBtn1.textContent = 'Vote ' + data.player1.fullName.split(' ')[0];
       if (voteBtn2) voteBtn2.textContent = 'Vote ' + data.player2.fullName.split(' ')[0];
 
-      // Load vote counts and user's vote for this duo
       loadDuoVoteCounts(data.slug);
       if (currentUser) loadDuoMyVote(data.slug);
       else document.getElementById('voteStatus').textContent = '';
@@ -2726,7 +2550,6 @@
       } catch (err) {}
     }
 
-    // Comment wall
     async function renderCommentWall(data) {
       if (commentPollTimer) { clearInterval(commentPollTimer); commentPollTimer = null; }
       lastCommentId = 0;
@@ -2806,7 +2629,6 @@
     const nameBlock = document.getElementById('nameBlock');
     const nameLines = nameBlock.querySelectorAll('.line');
     const duoComparisonSection = document.getElementById('duo-comparison');
-    const duoCarouselsSection = document.getElementById('timeline-section');
     const duoMessiContainer = document.getElementById('duoMessiContainer');
     const duoDivider = document.getElementById('duoDivider');
     const duoMessiText = document.getElementById('duoMessiText');
@@ -2860,7 +2682,6 @@
       { title: "Mbappe X Haland", base: "Mbappe.jpg", reveal: "Haland.jpg" }
     ];
 
-    // Remove any static placeholder slides (if present) and generate slides dynamically.
     carousel.innerHTML = '';
     duos.forEach((duo) => {
       const slide = document.createElement('div');
@@ -2914,17 +2735,7 @@
     });
 
     const slides = Array.from(carousel.querySelectorAll('.slide'));
-    const slideBaseImgs = slides.map((s) => s.querySelector('.layer-base img'));
-    const slideRevealImgs = slides.map((s) =>
-      s.querySelector('.layer-reveal img')
-    );
-    const slideRevealLayers = slides.map((s) => s.querySelector('.layer-reveal'));
     const revealCanvases = slides.map((s) => s.querySelector('.reveal-canvas'));
-    const revealImages = duos.map((duo) => {
-      const img = new Image();
-      img.src = `assets/${encodeURI(duo.reveal)}`;
-      return img;
-    });
 
     const paginationEl = document.getElementById('pagination');
     paginationEl.innerHTML = '';
@@ -3112,7 +2923,6 @@
         if (revealImg) revealImg.style.clipPath = 'circle(0px at 0 0)';
       });
 
-      // Reset reveal canvases when slide changes
       revealCanvases.forEach((canvas) => {
         if (!canvas) return;
         const ctx = canvas.getContext('2d');
@@ -3120,7 +2930,6 @@
         canvas._initialized = false;
       });
 
-      // Dynamic name block based on current duo
       const duo = duos[currentIndex];
       if (duo && nameLines.length >= 3) {
         const parts = duo.title.split(' X ');
@@ -3129,18 +2938,15 @@
         nameLines[2].textContent = parts[1] || '';
       }
 
-      // Reset spotlight when slide changes
       spotlightActive = false;
       document.body.style.cursor = '';
       spotlightRing.style.opacity = '0';
       cursorDot.style.opacity = '0';
 
-      // Update pagination active state
       paginationDots.forEach((dot, i) => {
         dot.classList.toggle('active', i === currentIndex);
       });
 
-      // Load duo data for current slide
       if (duoSlugs[currentIndex]) {
         loadDuo(duoSlugs[currentIndex]);
       }
@@ -3241,7 +3047,6 @@
     }
     buildDuoCarouselTracks();
 
-    // Bio pagination — uses window._messiBioPage / _ronaldoBioPage set by renderBiographies
     window._messiBioPage = 1;
     window._ronaldoBioPage = 1;
 
@@ -3253,7 +3058,6 @@
       pages[cur - 1].classList.remove('active');
       pages[next - 1].classList.add('active');
       window[pageVar] = next;
-      // Update button visibility
       const prevBtn = wrapper.querySelector('.bio-prev-btn');
       const nextBtn = wrapper.querySelector('.bio-next-btn');
       if (prevBtn) prevBtn.style.display = next === 1 ? 'none' : '';
@@ -3277,7 +3081,6 @@
       if (wrapper) navigateBio(wrapper, 'ronaldo-bio-page', '_ronaldoBioPage', -1);
     });
 
-    // Duo comparison slider (only when section is visible; drag on divider only)
     let duoSliderPercent = 50;
     function applyDuoSlider(percent) {
       percent = Math.max(5, Math.min(95, percent));
@@ -3559,11 +3362,8 @@
       cursorDot.style.left = mouse.x + 'px';
       cursorDot.style.top = mouse.y + 'px';
 
-      // Parallax
       const cx = (smoothMouse.x - window.innerWidth / 2) / window.innerWidth;
       const cy = (smoothMouse.y - window.innerHeight / 2) / window.innerHeight;
-
-      // Gentle floating for center card
       const floatY = Math.sin(time * 0.0015) * 5;
 
       for (let i = 0; i < slides.length; i++) {
@@ -3583,14 +3383,12 @@
 
       nameBlock.style.transform = `translate(${-cx * PARALLAX_STRENGTH * 0.5}px, ${-cy * PARALLAX_STRENGTH * 0.5}px)`;
 
-      // Text inversion only when spotlight is active and overlapping
       if (spotlightActive && isOverElement(nameBlock, smoothMouse.x, smoothMouse.y)) {
         nameBlock.classList.add('inverted');
       } else {
         nameBlock.classList.remove('inverted');
       }
 
-      // Spawn echoes only when spotlight is active
       echoTimer++;
       if (spotlightActive && velocity > 8 && echoTimer % 3 === 0) {
         spawnEcho(smoothMouse.x, smoothMouse.y);
@@ -3655,7 +3453,6 @@
       });
     });
 
-    /* NAVBAR AUTO HIDE ON SCROLL */
     const navBar = document.querySelector(".floating-nav");
     let lastScrollY = window.scrollY;
     window.addEventListener("scroll", () => {
@@ -3710,7 +3507,6 @@
           document.getElementById('voteStatus').textContent = 'You voted for ' + name + '!';
         }
         loadDuoVoteCounts(slug);
-        // Particle explosion on successful vote
         if (btnEl) {
           const rect = btnEl.getBoundingClientRect();
           const isPlayer1 = currentDuoData && playerId === currentDuoData.player1.id;
@@ -3720,7 +3516,6 @@
       } catch (err) { console.error('Vote error:', err); }
     }
 
-    /* ── Vote Particle Explosion ── */
     const particleCanvas = document.getElementById('particleCanvas');
     const pCtx = particleCanvas.getContext('2d');
     let particles = [];
@@ -3791,12 +3586,10 @@
     }
     animateParticles();
 
-    /* ── Scroll-triggered section reveals ── */
     const revealObserver = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
           entry.target.classList.add('revealed');
-          // Stats spotlight sweep
           if (entry.target.classList.contains('stats-comparison')) {
             entry.target.classList.add('stats-sweep');
           }
@@ -3807,9 +3600,7 @@
 
     document.querySelectorAll('[data-reveal]').forEach(el => revealObserver.observe(el));
 
-    /* ── Typewriter effect on biography titles ── */
     function typewriterEffect(el, text, speed) {
-      // Cancel any running typewriter on this element
       if (el._twInterval) clearInterval(el._twInterval);
       el.textContent = '';
       el.classList.add('typing');
@@ -3826,16 +3617,13 @@
       }, speed || 40);
     }
 
-    // Observe bio page changes and trigger typewriter on active page titles
     const bioObserverConfig = { attributes: true, attributeFilter: ['class'] };
     const _bioObservers = [];
     function setupBioTypewriter(selector) {
-      // Disconnect any previous observers to prevent stacking
       _bioObservers.forEach(o => o.disconnect());
       _bioObservers.length = 0;
       document.querySelectorAll(selector).forEach(page => {
         const obs = new MutationObserver((mutations) => {
-          // Only act once per batch, not per mutation
           const target = mutations[0].target;
           if (target.classList.contains('active')) {
             const title = target.querySelector('.bio-title, h2');
@@ -3849,7 +3637,6 @@
       });
     }
 
-    // Store original title text for typewriter — called after renderBiographies
     function captureBioTitles() {
       document.querySelectorAll('.messi-bio-page h2, .ronaldo-bio-page h2').forEach(h2 => {
         if (!h2.dataset.fullText) h2.dataset.fullText = h2.textContent;
@@ -3858,7 +3645,6 @@
       setupBioTypewriter('.ronaldo-bio-page');
     }
 
-    /* ── 3D Holographic Trading Cards ── */
     function renderTradingCards(data) {
       const grid = document.getElementById('tradingCardsGrid');
       if (!grid || !data) return;
@@ -3901,7 +3687,6 @@
         card.addEventListener('mouseleave', () => resetCard(card));
         card.addEventListener('click', () => {
           card.classList.toggle('flipped');
-          // Animate stat bars on flip
           if (card.classList.contains('flipped')) {
             setTimeout(() => {
               card.querySelectorAll('.holo-stat-bar').forEach(bar => {
@@ -3929,7 +3714,6 @@
       const rotateX = ((centerY - y) / centerY) * 15;
       const isFlipped = card.classList.contains('flipped');
       inner.style.transform = `rotateX(${rotateX}deg) rotateY(${isFlipped ? 180 + rotateY : rotateY}deg)`;
-      // Move shimmer
       const shimmerX = (x / rect.width) * 100;
       const shimmerY = (y / rect.height) * 100;
       card.querySelector('.holo-shimmer').style.backgroundPosition = `${shimmerX}% ${shimmerY}%`;
@@ -3941,14 +3725,12 @@
       inner.style.transform = isFlipped ? 'rotateY(180deg)' : '';
     }
 
-    /* ── Dark Mode Toggle ── */
     function toggleDarkMode() {
       document.body.classList.toggle('dark-mode');
       const isDark = document.body.classList.contains('dark-mode');
       localStorage.setItem('darkMode', isDark ? 'on' : 'off');
       document.getElementById('darkModeToggle').textContent = isDark ? '\u2600' : '\u263E';
     }
-    // Restore preference on load
     (function() {
       const pref = localStorage.getItem('darkMode');
       if (pref === 'on') {
