@@ -6,6 +6,40 @@
   <title>Messi X Cristiano</title>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --bg: #fff;
+      --bg-alt: #fafaf8;
+      --text: #111;
+      --text-secondary: #444;
+      --text-muted: #666;
+      --border: #111;
+      --grid-line: #f7f7f7;
+      --card-bg: rgba(255,255,255,0.12);
+      --nav-bg: rgba(255,255,255,0.85);
+      --input-bg: #fff;
+      --input-border: #ccc;
+      --overlay-bg: rgba(0,0,0,0.45);
+      --modal-bg: rgba(255,255,255,0.15);
+      --shadow: rgba(0,0,0,0.18);
+      transition: background-color 0.4s, color 0.4s;
+    }
+    body.dark-mode {
+      --bg: #0e0e0e;
+      --bg-alt: #161616;
+      --text: #ffffff;
+      --text-secondary: #ccc;
+      --text-muted: #999;
+      --border: #ffffff;
+      --grid-line: #1a1a1a;
+      --card-bg: rgba(255,255,255,0.06);
+      --nav-bg: rgba(14,14,14,0.9);
+      --input-bg: #1a1a1a;
+      --input-border: #333;
+      --overlay-bg: rgba(0,0,0,0.7);
+      --modal-bg: rgba(30,30,30,0.4);
+      --shadow: rgba(0,0,0,0.5);
+    }
+
     *, *::before, *::after {
       margin: 0;
       padding: 0;
@@ -22,12 +56,13 @@
       margin: 0;
       height: 100%;
       overflow-x: hidden;
-      background-color: #fff;
+      background-color: var(--bg);
       background-image:
-        linear-gradient(#f7f7f7 1px, transparent 1px),
-        linear-gradient(90deg, #f7f7f7 1px, transparent 1px);
+        linear-gradient(var(--grid-line) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
       background-size: 80px 80px;
       font-family: 'Playfair Display', serif;
+      color: var(--text);
     }
 
     .hero {
@@ -36,10 +71,10 @@
       max-width: 100%;
       height: 100vh;
       overflow: hidden;
-      background-color: #fff;
+      background-color: var(--bg);
       background-image:
-        linear-gradient(#f7f7f7 1px, transparent 1px),
-        linear-gradient(90deg, #f7f7f7 1px, transparent 1px);
+        linear-gradient(var(--grid-line) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
       background-size: 80px 80px;
     }
 
@@ -62,9 +97,10 @@
       width: 48%;
       max-width: 500px;
       height: auto;
-      transition: transform 0.5s ease, opacity 0.5s ease;
-      will-change: transform, opacity;
+      transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.5s ease, filter 0.5s ease;
+      will-change: transform, opacity, filter;
       perspective: 1200px;
+      filter: blur(0px);
     }
 
     .slide-inner {
@@ -106,30 +142,37 @@
       transform: translate(-50%, -50%) scale(1);
       z-index: 5;
       opacity: 1;
+      filter: drop-shadow(0 16px 48px rgba(0,0,0,0.2));
     }
 
     .slide--right-1 {
       transform: translate(45%, -50%) scale(0.9);
       opacity: 0.4;
       z-index: 4;
+      filter: blur(1.5px);
     }
+    .slide--right-1:hover { opacity: 0.55; filter: blur(0.5px); }
 
     .slide--right-2 {
       transform: translate(75%, -50%) scale(0.8);
       opacity: 0.15;
       z-index: 3;
+      filter: blur(3px);
     }
 
     .slide--left-1 {
       transform: translate(-145%, -50%) scale(0.9);
       opacity: 0.4;
       z-index: 4;
+      filter: blur(1.5px);
     }
+    .slide--left-1:hover { opacity: 0.55; filter: blur(0.5px); }
 
     .slide--left-2 {
       transform: translate(-175%, -50%) scale(0.8);
       opacity: 0.15;
       z-index: 3;
+      filter: blur(3px);
     }
 
     /* Animated grid */
@@ -1149,22 +1192,41 @@
       align-items: center;
       gap: 10px;
     }
+    .dark-mode-toggle {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: 1.5px solid var(--border);
+      background: transparent;
+      color: var(--text);
+      font-size: 18px;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .dark-mode-toggle:hover {
+      background: var(--text);
+      color: var(--bg) !important;
+    }
+    body.dark-mode .dark-mode-toggle { font-size: 16px; }
     .nav-auth-btn {
       font-family: "Playfair Display", serif;
       font-size: 15px;
       font-weight: 600;
       padding: 8px 22px;
       border-radius: 40px;
-      border: 1.5px solid #111;
+      border: 1.5px solid var(--border);
       background: transparent;
-      color: #111;
+      color: var(--text);
       cursor: pointer;
       transition: all 0.25s;
       white-space: nowrap;
     }
     .nav-auth-btn:hover {
-      background: #111;
-      color: white;
+      background: var(--text);
+      color: var(--bg) !important;
     }
     .nav-user-name {
       font-family: "Playfair Display", serif;
@@ -1536,6 +1598,117 @@
       text-align: left;
       flex-shrink: 0;
     }
+
+    /* ── Dark Mode Overrides ── */
+    body.dark-mode { color: #fff; }
+    body.dark-mode h1, body.dark-mode h2, body.dark-mode h3,
+    body.dark-mode h4, body.dark-mode p, body.dark-mode span,
+    body.dark-mode a, body.dark-mode label, body.dark-mode button,
+    body.dark-mode input, body.dark-mode textarea { color: #fff; }
+    body.dark-mode,
+    body.dark-mode .hero {
+      background-color: var(--bg);
+      background-image:
+        linear-gradient(var(--grid-line) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+    }
+    body.dark-mode .floating-nav {
+      background: var(--nav-bg);
+      border-bottom-color: var(--grid-line);
+    }
+    body.dark-mode .nav-item { color: var(--text); }
+    body.dark-mode .nav-item:hover { color: var(--text-secondary); }
+    body.dark-mode .nav-user-name { color: var(--text); }
+    body.dark-mode .name .line { color: var(--text); }
+    body.dark-mode .name .line.inverted { color: var(--bg); }
+    body.dark-mode .cursor-dot { background: var(--text); }
+    body.dark-mode .pagination-dot { background: var(--text-muted); }
+    body.dark-mode .pagination-dot.active { background: var(--text); }
+    body.dark-mode .duo-stage { background: var(--bg); }
+    body.dark-mode .duo-text h2,
+    body.dark-mode .duo-text p { color: var(--text); }
+    body.dark-mode .duo-editorial p { color: var(--text-secondary); }
+    body.dark-mode .duo-divider { background: var(--text-muted); }
+    body.dark-mode .messi-biography,
+    body.dark-mode .ronaldo-biography { background: var(--bg-alt); }
+    body.dark-mode .bio-title,
+    body.dark-mode .messi-bio-page h2,
+    body.dark-mode .ronaldo-bio-page h2 { color: var(--text); }
+    body.dark-mode .messi-bio-page p,
+    body.dark-mode .ronaldo-bio-page p { color: var(--text-secondary); }
+    body.dark-mode .bio-nav-btn { background: #fff; color: #0e0e0e !important; }
+    body.dark-mode .stats-comparison { background: var(--bg); }
+    body.dark-mode .stats-title { color: var(--text); }
+    body.dark-mode .stat-label { color: var(--text-muted); }
+    body.dark-mode .stat-left,
+    body.dark-mode .stat-right { color: var(--text); }
+    body.dark-mode .vote-arena { background: var(--bg-alt); }
+    body.dark-mode .vote-title { color: var(--text); }
+    body.dark-mode .vote-player-name { color: var(--text); }
+    body.dark-mode .vote-btn { background: #fff; color: #0e0e0e !important; }
+    body.dark-mode .vote-btn:hover { opacity: 0.85; }
+    body.dark-mode .vote-vs { color: var(--text-muted); }
+    body.dark-mode #voteStatus { color: var(--text-secondary); }
+    body.dark-mode .vote-counts-label { color: var(--text-muted); }
+    body.dark-mode .vote-bar-track { background: var(--grid-line); }
+    body.dark-mode .comment-wall { background: var(--bg); }
+    body.dark-mode .comment-wall-title { color: var(--text); }
+    body.dark-mode .comment-ticker { color: var(--text-secondary); }
+    body.dark-mode .comment-item { border-color: var(--grid-line); }
+    body.dark-mode .comment-author { color: var(--text); }
+    body.dark-mode .comment-text { color: var(--text-secondary); }
+    body.dark-mode #commentInput {
+      background: var(--input-bg);
+      border-color: var(--input-border);
+      color: var(--text);
+    }
+    body.dark-mode #commentInput:focus { border-color: var(--text); }
+    body.dark-mode #commentForm button {
+      background: #fff;
+      color: #0e0e0e !important;
+    }
+    body.dark-mode .comment-login-prompt { color: var(--text-muted); }
+    body.dark-mode .comment-login-prompt a { color: var(--text); }
+    body.dark-mode .trading-cards-section { background: var(--bg-alt); }
+    body.dark-mode .trading-cards-title { color: var(--text); }
+    body.dark-mode .legacy-footer {
+      background: var(--bg-alt);
+      color: var(--text);
+    }
+    body.dark-mode .legacy-footer h2,
+    body.dark-mode .legacy-description,
+    body.dark-mode .legacy-links a,
+    body.dark-mode .legacy-bottom p { color: var(--text-secondary); }
+    body.dark-mode .legacy-links a:hover { color: var(--text); }
+    body.dark-mode .auth-overlay { background: var(--overlay-bg); }
+    body.dark-mode .auth-modal {
+      background: var(--modal-bg);
+      border-color: rgba(255,255,255,0.08);
+    }
+    body.dark-mode .auth-modal h2,
+    body.dark-mode .auth-modal label { color: var(--text); }
+    body.dark-mode .auth-modal input {
+      background: var(--input-bg);
+      border-color: var(--input-border);
+      color: var(--text);
+    }
+    body.dark-mode .auth-modal input:focus { border-color: var(--text); }
+    body.dark-mode .auth-submit-btn {
+      background: #fff;
+      color: #0e0e0e !important;
+    }
+    body.dark-mode .auth-toggle { color: var(--text-muted); }
+    body.dark-mode .auth-toggle a { color: var(--text); }
+    body.dark-mode .duo-carousels { background: var(--bg-alt); }
+    body.dark-mode .duo-carousels h2 { color: var(--text); }
+    body.dark-mode .duo-carousel-next {
+      background: #fff;
+      color: #0e0e0e !important;
+    }
+    body.dark-mode .flip-btn {
+      background: rgba(255,255,255,0.5);
+      color: #000;
+    }
   </style>
   <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
@@ -1551,6 +1724,7 @@
         <a href="#timeline-section" class="nav-item">Timeline</a>
       </div>
       <div class="nav-auth">
+        <button class="dark-mode-toggle" id="darkModeToggle" onclick="toggleDarkMode()" aria-label="Toggle dark mode">&#9790;</button>
         <button class="nav-auth-btn" id="navLoginBtn" onclick="openAuthModal()">Login</button>
         <span class="nav-user-name hidden" id="navUserName"></span>
         <button class="nav-auth-btn hidden" id="navLogoutBtn" onclick="handleLogout()">Logout</button>
@@ -3389,12 +3563,16 @@
       const cx = (smoothMouse.x - window.innerWidth / 2) / window.innerWidth;
       const cy = (smoothMouse.y - window.innerHeight / 2) / window.innerHeight;
 
+      // Gentle floating for center card
+      const floatY = Math.sin(time * 0.0015) * 5;
+
       for (let i = 0; i < slides.length; i++) {
         if (slides[i].style.display === 'none') continue;
         const inner = slides[i].querySelector('.slide-inner');
         if (inner) {
+          const isCenter = slides[i].classList.contains('slide--center');
           const tx = -cx * PARALLAX_STRENGTH;
-          const ty = -cy * PARALLAX_STRENGTH;
+          const ty = -cy * PARALLAX_STRENGTH + (isCenter ? floatY : 0);
           parallaxOffsets.set(inner, `translate(${tx}px, ${ty}px)`);
           if (!inner.classList.contains('is-flipping')) {
             const t = parallaxOffsets.get(inner);
@@ -3631,15 +3809,18 @@
 
     /* ── Typewriter effect on biography titles ── */
     function typewriterEffect(el, text, speed) {
+      // Cancel any running typewriter on this element
+      if (el._twInterval) clearInterval(el._twInterval);
       el.textContent = '';
       el.classList.add('typing');
       let i = 0;
-      const interval = setInterval(() => {
+      el._twInterval = setInterval(() => {
         if (i < text.length) {
           el.textContent += text[i];
           i++;
         } else {
-          clearInterval(interval);
+          clearInterval(el._twInterval);
+          el._twInterval = null;
           el.classList.remove('typing');
         }
       }, speed || 40);
@@ -3647,18 +3828,24 @@
 
     // Observe bio page changes and trigger typewriter on active page titles
     const bioObserverConfig = { attributes: true, attributeFilter: ['class'] };
+    const _bioObservers = [];
     function setupBioTypewriter(selector) {
+      // Disconnect any previous observers to prevent stacking
+      _bioObservers.forEach(o => o.disconnect());
+      _bioObservers.length = 0;
       document.querySelectorAll(selector).forEach(page => {
-        new MutationObserver((mutations) => {
-          mutations.forEach(m => {
-            if (m.target.classList.contains('active')) {
-              const title = m.target.querySelector('.bio-title, h2');
-              if (title && title.dataset.fullText) {
-                typewriterEffect(title, title.dataset.fullText);
-              }
+        const obs = new MutationObserver((mutations) => {
+          // Only act once per batch, not per mutation
+          const target = mutations[0].target;
+          if (target.classList.contains('active')) {
+            const title = target.querySelector('.bio-title, h2');
+            if (title && title.dataset.fullText) {
+              typewriterEffect(title, title.dataset.fullText);
             }
-          });
-        }).observe(page, bioObserverConfig);
+          }
+        });
+        obs.observe(page, bioObserverConfig);
+        _bioObservers.push(obs);
       });
     }
 
@@ -3753,6 +3940,22 @@
       const isFlipped = card.classList.contains('flipped');
       inner.style.transform = isFlipped ? 'rotateY(180deg)' : '';
     }
+
+    /* ── Dark Mode Toggle ── */
+    function toggleDarkMode() {
+      document.body.classList.toggle('dark-mode');
+      const isDark = document.body.classList.contains('dark-mode');
+      localStorage.setItem('darkMode', isDark ? 'on' : 'off');
+      document.getElementById('darkModeToggle').textContent = isDark ? '\u2600' : '\u263E';
+    }
+    // Restore preference on load
+    (function() {
+      const pref = localStorage.getItem('darkMode');
+      if (pref === 'on') {
+        document.body.classList.add('dark-mode');
+        document.getElementById('darkModeToggle').textContent = '\u2600';
+      }
+    })();
 
     requestAnimationFrame(animate);
   </script>
